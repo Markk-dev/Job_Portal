@@ -1,0 +1,32 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+
+body {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    background: var(--bg-color);
+    font-family: 'Satoshi','Inter';
+}
+
+
+:root {
+/*    Main Colors*/
+    --primary-color: #14A800;
+    --accent: #FCBF49;
+    --text-color: #000000;
+
+/*    Utilities*/
+    --bg-color: #F3F9F5;
+    --bg-header: #FAFAFA;
+    --icon-color: #000000;
+    --border: #B5B5B5;
+}
+
+
