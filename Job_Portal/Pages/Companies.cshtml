@@ -1,0 +1,290 @@
+﻿@page
+@model Job_Portal.Pages.CompaniesModel
+@{
+    ViewData["Title"] = "Companies";
+}
+
+<div class="companies-container">
+    <!-- Hero section -->
+    <div class="hero-section">
+        <div class="hero-content">
+            <div class="hero-image">
+                <img src="/images/image1.png" alt="Workplace illustration" />
+            </div>
+            <div class="hero-text">
+                <h1 class="hero-title">Find a workplace that fits for you</h1>
+                <p class="hero-description">
+                    Discover what an employer is really like before you make your next move.
+                    Search reviews and ratings, and filter companies based on the qualities
+                    that matter most to your job search.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search bar -->
+    <div class="search-container">
+        <div class="search-box">
+            <i class="search-icon">🔍</i>
+            <input type="text" placeholder="Search for a company" />
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <div class="main-content">
+        <div class="content-header">
+            <h2 class="section-title">Explore Companies</h2>
+        </div>
+
+        <div class="content-grid">
+            <!-- Filters sidebar -->
+            <div class="filters-sidebar">
+                <div class="filter-group">
+                    <label class="filter-label">Company</label>
+                    <div class="filter-input">
+                        <select asp-for="SearchCompany" class="form-select">
+                            <option value="">Select a company</option>
+                            @foreach (var company in Model.Companies)
+                            {
+                                <option value="@company.Id">@company.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Location</label>
+                    <div class="filter-input">
+                        <input type="text" asp-for="SearchLocation" class="form-control" placeholder="Select a location" />
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Industries</label>
+                    <div class="filter-input">
+                        <input type="text" asp-for="SearchIndustries" class="form-control" placeholder="e.g. healthcare, internet, education" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Company details -->
+            <div class="company-details">
+                <div class="company-header">
+                    <div class="company-logo" style="background-color: @Model.SelectedCompany.LogoColor"></div>
+                    <div class="company-info">
+                        <h3 class="company-name">@Model.SelectedCompany.Name</h3>
+                        <div class="company-location">@Model.SelectedCompany.Location</div>
+                    </div>
+                    <div class="company-actions">
+                        <button class="action-btn">
+                            <i class="more-icon">⋯</i>
+                        </button>
+                        <button class="action-btn">
+                            <i class="save-icon">🔖</i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="company-description">
+                    <p>@Model.SelectedCompany.Description</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Overall layout */
+    .companies-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0;
+    }
+
+    /* Hero section */
+    .hero-section {
+        background-color: #fff;
+        padding: 30px 20px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .hero-content {
+        display: flex;
+        align-items: center;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .hero-image {
+        flex: 0 0 200px;
+        margin-right: 40px;
+    }
+
+        .hero-image img {
+            width: 100%;
+            height: auto;
+        }
+
+    .hero-text {
+        flex: 1;
+    }
+
+    .hero-title {
+        font-size: 28px;
+        font-weight: bold;
+        color: #4CAF50;
+        margin-bottom: 15px;
+    }
+
+    .hero-description {
+        font-size: 16px;
+        color: #555;
+        line-height: 1.5;
+    }
+
+    /* Search bar */
+    .search-container {
+        padding: 15px;
+        background-color: #fff;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .search-box {
+        display: flex;
+        align-items: center;
+        background-color: #f0f0f0;
+        border-radius: 20px;
+        padding: 8px 15px;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
+    .search-icon {
+        margin-right: 10px;
+        color: #757575;
+    }
+
+    .search-box input {
+        border: none;
+        background: transparent;
+        width: 100%;
+        outline: none;
+        font-size: 14px;
+    }
+
+    /* Main content */
+    .main-content {
+        padding: 20px;
+    }
+
+    .content-header {
+        margin-bottom: 20px;
+    }
+
+    .section-title {
+        font-size: 20px;
+        font-weight: bold;
+        color: #4CAF50;
+    }
+
+    .content-grid {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 20px;
+    }
+
+    /* Filters sidebar */
+    .filters-sidebar {
+        background-color: #fff;
+        padding: 15px;
+        border-radius: 8px;
+    }
+
+    .filter-group {
+        margin-bottom: 15px;
+    }
+
+    .filter-label {
+        display: block;
+        font-size: 14px;
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: #333;
+    }
+
+    .filter-input {
+        width: 100%;
+    }
+
+    .form-select, .form-control {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 20px;
+        background-color: #f5f5f5;
+        font-size: 14px;
+        color: #333;
+    }
+
+    /* Company details */
+    .company-details {
+        background-color: #fff;
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+        overflow: hidden;
+    }
+
+    .company-header {
+        display: flex;
+        align-items: center;
+        padding: 20px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .company-logo {
+        width: 40px;
+        height: 40px;
+        border-radius: 4px;
+        margin-right: 15px;
+    }
+
+    .company-info {
+        flex: 1;
+    }
+
+    .company-name {
+        font-size: 18px;
+        font-weight: bold;
+        margin: 0 0 5px 0;
+    }
+
+    .company-location {
+        font-size: 14px;
+        color: #666;
+    }
+
+    .company-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .action-btn {
+        background: none;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+
+    .company-description {
+        padding: 20px;
+        font-size: 14px;
+        line-height: 1.6;
+        color: #555;
+    }
+</style>
+

@@ -1,0 +1,307 @@
+﻿@page
+@model Job_Portal.Pages.JobsModel
+@{
+    ViewData["Title"] = "Jobs";
+}
+
+<div class="jobs-container">
+    <!-- Search bar -->
+    <div class="search-container">
+        <div class="search-box">
+            <i class="search-icon">🔍</i>
+            <input type="text" placeholder="Find your perfect job" />
+        </div>
+    </div>
+
+    <!-- Jobs content -->
+    <div class="jobs-content">
+        <!-- Job listings -->
+        <div class="job-listings">
+            @foreach (var job in Model.Jobs)
+            {
+                <div class="job-card @(job.IsSelected ? "selected" : "")">
+                    <div class="job-info">
+                        <div class="company-name">@job.CompanyName</div>
+                        <h2 class="job-title">@job.Title</h2>
+                        <div class="job-location">@job.Location</div>
+                        <div class="job-salary">$@job.MinSalary.ToString("N0") - $@job.MaxSalary.ToString("N0")</div>
+                    </div>
+                    <div class="job-actions">
+                        <a asp-page-handler="SelectJob" asp-route-jobId="@job.Id" class="select-job-link">
+                            <div class="job-card-inner"></div>
+                        </a>
+                        <form method="post" asp-page-handler="Apply" asp-route-jobId="@job.Id">
+                            <button type="submit" class="easy-apply-btn">
+                                <i class="apply-icon">✓</i> Easy Apply
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Job details -->
+        <div class="job-details">
+            @if (Model.SelectedJob != null)
+            {
+                <div class="job-header">
+                    <div class="job-header-info">
+                        <div class="company-name">@Model.SelectedJob.CompanyName</div>
+                        <h1 class="job-title">@Model.SelectedJob.Title</h1>
+                        <div class="job-location">@Model.SelectedJob.Location</div>
+                    </div>
+                    <div class="job-header-actions">
+                        <button class="action-btn">
+                            <i class="more-icon">⋯</i>
+                        </button>
+                        <button class="action-btn">
+                            <i class="save-icon">🔖</i>
+                        </button>
+                        <form method="post" asp-page-handler="Apply" asp-route-jobId="@Model.SelectedJob.Id">
+                            <button type="submit" class="easy-apply-btn">
+                                <i class="apply-icon">✓</i> Easy Apply
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="job-section">
+                    <h3 class="section-title">Overview</h3>
+                    <p class="job-overview">
+                        @Model.SelectedJob.Overview
+                    </p>
+                </div>
+
+                <div class="job-section">
+                    <h3 class="section-title">Base pay range</h3>
+                    <div class="salary-range">
+                        <div class="salary-amount">$@Model.SelectedJob.MinSalary.ToString("N0") — $@Model.SelectedJob.MaxSalary.ToString("N0") <span class="salary-period">(Estimated)</span></div>
+                        <div class="salary-info">Base salary range</div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Overall layout */
+    .jobs-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0;
+    }
+
+    /* Search bar */
+    .search-container {
+        padding: 15px;
+        border-bottom: 1px solid #e0e0e0;
+        background-color: #fff;
+    }
+
+    .search-box {
+        display: flex;
+        align-items: center;
+        background-color: #f0f0f0;
+        border-radius: 20px;
+        padding: 8px 15px;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
+    .search-icon {
+        margin-right: 10px;
+        color: #757575;
+    }
+
+    .search-box input {
+        border: none;
+        background: transparent;
+        width: 100%;
+        outline: none;
+        font-size: 14px;
+    }
+
+    /* Jobs content */
+    .jobs-content {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 20px;
+        padding: 20px;
+    }
+
+    /* Job listings */
+    .job-listings {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .job-card {
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        padding: 15px;
+        position: relative;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+        .job-card.selected {
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+    .job-card-inner {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1;
+    }
+
+    .company-name {
+        font-size: 14px;
+        color: #555;
+        margin-bottom: 5px;
+    }
+
+    .job-title {
+        font-size: 18px;
+        font-weight: bold;
+        color: #4CAF50;
+        margin: 0 0 5px 0;
+    }
+
+    .job-location {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 5px;
+    }
+
+    .job-salary {
+        font-size: 14px;
+        color: #666;
+    }
+
+    .job-actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 10px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .easy-apply-btn {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 20px;
+        padding: 5px 15px;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .apply-icon {
+        font-size: 12px;
+    }
+
+    /* Job details */
+    .job-details {
+        background-color: #fff;
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+        overflow: hidden;
+    }
+
+    .job-header {
+        display: flex;
+        justify-content: space-between;
+        padding: 20px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .job-header-info {
+        flex: 1;
+    }
+
+    .job-header-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .action-btn {
+        background: none;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+
+    .job-section {
+        padding: 20px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .section-title {
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #333;
+    }
+
+    .job-overview {
+        font-size: 14px;
+        line-height: 1.5;
+        color: #555;
+    }
+
+    .salary-range {
+        margin-top: 10px;
+    }
+
+    .salary-amount {
+        font-size: 16px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .salary-period {
+        font-weight: normal;
+        font-size: 14px;
+        color: #666;
+    }
+
+    .salary-info {
+        font-size: 14px;
+        color: #666;
+        margin-top: 5px;
+    }
+
+    .select-job-link {
+        text-decoration: none;
+        color: inherit;
+    }
+</style>
+
+<script>
+    // Optional JavaScript for enhancing the UI
+    document.addEventListener('DOMContentLoaded', function() {
+        // Show success message if it exists
+    @if (TempData["Message"] != null)
+    {
+        <text>
+                alert('@TempData["Message"]');
+        </text>
+    }
+    });
+</script>
+

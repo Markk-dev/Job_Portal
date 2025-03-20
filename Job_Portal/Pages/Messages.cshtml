@@ -1,0 +1,334 @@
+﻿@page
+@model Job_Portal.Pages.MessagesModel
+@{
+    ViewData["Title"] = "Messages";
+}
+
+<div class="messages-container">
+    <!-- Messages content -->
+    <div class="messages-content">
+        <!-- Conversations list -->
+        <div class="conversations-list">
+            <div class="conversations-header">
+                <h2 class="section-title">All messages</h2>
+                <div class="search-box">
+                    <i class="search-icon">🔍</i>
+                    <input type="text" placeholder="Search through your messages" />
+                </div>
+            </div>
+
+            <div class="conversations">
+                @foreach (var conversation in Model.Conversations)
+                {
+                    <a href="/Messages?conversationId=@conversation.Id" class="conversation-item @(conversation.IsSelected ? "selected" : "")">
+                        <div class="conversation-avatar">
+                            <div class="avatar-placeholder">
+                                @conversation.RecipientName.Substring(0, 1)
+                            </div>
+                        </div>
+                        <div class="conversation-info">
+                            <div class="conversation-name">@conversation.RecipientName</div>
+                            <div class="conversation-preview">@conversation.LastMessage</div>
+                        </div>
+                    </a>
+                }
+            </div>
+        </div>
+
+        <!-- Message thread -->
+        <div class="message-thread">
+            @if (Model.SelectedConversation != null)
+            {
+                <div class="thread-header">
+                    <div class="thread-user">
+                        <div class="conversation-avatar">
+                            <div class="avatar-placeholder">
+                                @Model.SelectedConversation.RecipientName.Substring(0, 1)
+                            </div>
+                        </div>
+                        <div class="thread-user-info">
+                            <div class="thread-user-name">@Model.SelectedConversation.RecipientName</div>
+                            <div class="thread-user-title">@Model.SelectedConversation.RecipientTitle</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="thread-messages">
+                    @foreach (var message in Model.SelectedConversation.Messages)
+                    {
+                        <div class="message-bubble @(message.IsFromCurrentUser ? "sent" : "received")">
+                            @if (!message.IsFromCurrentUser)
+                            {
+                                <div class="message-avatar">
+                                    <div class="avatar-placeholder small">
+                                        @message.SenderName.Substring(0, 1)
+                                    </div>
+                                </div>
+                            }
+                            <div class="message-content">
+                                <div class="message-text">@message.Content</div>
+                            </div>
+                            @if (message.IsFromCurrentUser)
+                            {
+                                <div class="message-avatar">
+                                    <div class="avatar-placeholder small">
+                                        Y
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+
+                <div class="message-input">
+                    <form method="post" asp-page-handler="SendMessage" asp-route-conversationId="@Model.SelectedConversation.Id">
+                        <input type="text" asp-for="NewMessageContent" placeholder="Type a message..." class="message-input-field" />
+                        <button type="submit" class="send-button">Send</button>
+                    </form>
+                </div>
+            }
+            else
+            {
+                <div class="no-conversation">
+                    <p>Select a conversation to start messaging</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Overall layout */
+    .messages-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    /* Messages content */
+    .messages-content {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 20px;
+        height: calc(100vh - 150px);
+        min-height: 500px;
+    }
+
+    /* Conversations list */
+    .conversations-list {
+        background-color: #fff;
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .conversations-header {
+        padding: 15px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .section-title {
+        font-size: 18px;
+        font-weight: bold;
+        color: #4CAF50;
+        margin-bottom: 10px;
+    }
+
+    .search-box {
+        display: flex;
+        align-items: center;
+        background-color: #f0f0f0;
+        border-radius: 20px;
+        padding: 8px 15px;
+    }
+
+    .search-icon {
+        margin-right: 10px;
+        color: #757575;
+    }
+
+    .search-box input {
+        border: none;
+        background: transparent;
+        width: 100%;
+        outline: none;
+        font-size: 14px;
+    }
+
+    .conversations {
+        flex: 1;
+        overflow-y: auto;
+    }
+
+    .conversation-item {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        border-bottom: 1px solid #f0f0f0;
+        text-decoration: none;
+        color: inherit;
+        transition: background-color 0.2s;
+    }
+
+        .conversation-item:hover, .conversation-item.selected {
+            background-color: #f9f9f9;
+        }
+
+    .conversation-avatar {
+        margin-right: 15px;
+    }
+
+    .avatar-placeholder {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #FFC107;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: white;
+    }
+
+        .avatar-placeholder.small {
+            width: 30px;
+            height: 30px;
+            font-size: 12px;
+        }
+
+    .conversation-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .conversation-name {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .conversation-preview {
+        font-size: 14px;
+        color: #666;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Message thread */
+    .message-thread {
+        background-color: #fff;
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .thread-header {
+        padding: 15px;
+        border-bottom: 1px solid #e0e0e0;
+        background-color: #f9f9f9;
+    }
+
+    .thread-user {
+        display: flex;
+        align-items: center;
+    }
+
+    .thread-user-info {
+        flex: 1;
+    }
+
+    .thread-user-name {
+        font-weight: bold;
+    }
+
+    .thread-user-title {
+        font-size: 14px;
+        color: #666;
+    }
+
+    .thread-messages {
+        flex: 1;
+        padding: 15px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .message-bubble {
+        display: flex;
+        align-items: flex-start;
+        max-width: 80%;
+    }
+
+        .message-bubble.received {
+            align-self: flex-start;
+        }
+
+        .message-bubble.sent {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+    .message-avatar {
+        margin: 0 10px;
+    }
+
+    .message-content {
+        background-color: #f0f0f0;
+        padding: 10px 15px;
+        border-radius: 18px;
+    }
+
+    .message-bubble.sent .message-content {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    .message-text {
+        font-size: 14px;
+        line-height: 1.4;
+    }
+
+    .message-input {
+        padding: 15px;
+        border-top: 1px solid #e0e0e0;
+    }
+
+        .message-input form {
+            display: flex;
+            gap: 10px;
+        }
+
+    .message-input-field {
+        flex: 1;
+        border: 1px solid #e0e0e0;
+        border-radius: 20px;
+        padding: 10px 15px;
+        outline: none;
+        font-size: 14px;
+    }
+
+    .send-button {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 20px;
+        padding: 10px 20px;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    .no-conversation {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: #666;
+    }
+</style>
+
