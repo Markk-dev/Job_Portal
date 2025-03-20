@@ -1,0 +1,338 @@
+﻿@page
+@model Job_Portal.Pages.CommunityModel
+@{
+    ViewData["Title"] = "Community";
+}
+
+<div class="community-container">
+    <!-- Left sidebar with profile -->
+    <div class="profile-sidebar">
+        <div class="profile-avatar">
+            <img src="/images/profile-placeholder.png" alt="Profile" />
+        </div>
+    </div>
+
+    <!-- Main content area -->
+    <div class="main-content">
+        <!-- Search bar -->
+        <div class="search-container">
+            <div class="search-box">
+                <i class="search-icon">🔍</i>
+                <input type="text" placeholder="Search for feeds or conversations" />
+            </div>
+        </div>
+
+        <!-- Post creation and feed -->
+        <div class="feed-container">
+            <!-- Create post -->
+            <div class="create-post">
+                <div class="post-avatar current-user">
+                    <i class="user-icon">👤</i>
+                </div>
+                <form method="post" class="post-form">
+                    <input type="text" asp-for="NewPostContent" placeholder="Got something to share?" class="post-input" />
+                    <button type="submit" class="post-submit">Post</button>
+                </form>
+            </div>
+
+            <!-- Posts feed -->
+            <div class="posts-feed">
+                @foreach (var post in Model.Posts)
+                {
+                    <div class="post-item">
+                        <div class="post-avatar" style="background-color: @post.AuthorColor">
+                            <span class="avatar-initial">@post.AuthorName.Substring(0, 1)</span>
+                        </div>
+                        <div class="post-content">
+                            <div class="post-header">
+                                <span class="post-author">@post.AuthorName</span>
+                                <span class="post-time">@post.GetTimeAgo()</span>
+                            </div>
+                            <div class="post-text">
+                                @post.Content
+                            </div>
+                            <div class="post-actions">
+                                <form method="post" asp-page-handler="LikePost" asp-route-postId="@post.Id" class="like-form">
+                                    <button type="submit" class="action-button like-button">
+                                        <i class="heart-icon">❤️</i>
+                                        <span class="count">@post.LikeCount</span>
+                                    </button>
+                                </form>
+                                <button class="action-button comment-button">
+                                    <i class="comment-icon">💬</i>
+                                    <span class="count">@post.CommentCount</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Right sidebar with categories -->
+    <div class="categories-sidebar">
+        <h3 class="sidebar-title">Explore items here</h3>
+
+        <div class="categories-container">
+            @foreach (var category in Model.Categories)
+            {
+                <div class="category-card">
+                    <h4 class="category-title">@category.Name</h4>
+                    <p class="category-description">@category.Description</p>
+                    <a href="#" class="category-link">Read More</a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Overall layout */
+    .community-container {
+        display: grid;
+        grid-template-columns: 100px 1fr 300px;
+        gap: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    /* Profile sidebar */
+    .profile-sidebar {
+        display: flex;
+        justify-content: center;
+        padding-top: 20px;
+    }
+
+    .profile-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 2px solid #e0e0e0;
+    }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    /* Main content area */
+    .main-content {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    /* Search bar */
+    .search-container {
+        padding: 15px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .search-box {
+        display: flex;
+        align-items: center;
+        background-color: #f0f0f0;
+        border-radius: 20px;
+        padding: 8px 15px;
+    }
+
+    .search-icon {
+        margin-right: 10px;
+        color: #757575;
+    }
+
+    .search-box input {
+        border: none;
+        background: transparent;
+        width: 100%;
+        outline: none;
+        font-size: 14px;
+    }
+
+    /* Post creation */
+    .create-post {
+        display: flex;
+        padding: 15px;
+        border-bottom: 1px solid #f0f0f0;
+        align-items: center;
+    }
+
+    .post-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 10px;
+        color: white;
+        font-weight: bold;
+    }
+
+    .current-user {
+        background-color: #4CAF50; /* Green */
+    }
+
+    .post-form {
+        display: flex;
+        flex: 1;
+    }
+
+    .post-input {
+        flex: 1;
+        border: 1px solid #e0e0e0;
+        border-radius: 20px;
+        padding: 8px 15px;
+        outline: none;
+        font-size: 14px;
+    }
+
+    .post-submit {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 5px 15px;
+        margin-left: 10px;
+        cursor: pointer;
+        display: none; /* Hide by default, show on input focus */
+    }
+
+    .post-input:focus + .post-submit,
+    .post-input:not(:placeholder-shown) + .post-submit {
+        display: block;
+    }
+
+    /* Posts feed */
+    .posts-feed {
+        padding: 0 15px;
+    }
+
+    .post-item {
+        display: flex;
+        padding: 15px 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .post-content {
+        flex: 1;
+    }
+
+    .post-header {
+        margin-bottom: 5px;
+    }
+
+    .post-author {
+        font-weight: bold;
+        color: #333;
+    }
+
+    .post-time {
+        font-size: 12px;
+        color: #757575;
+        margin-left: 5px;
+    }
+
+    .post-text {
+        margin-bottom: 10px;
+        font-size: 14px;
+        line-height: 1.4;
+    }
+
+    .post-actions {
+        display: flex;
+        gap: 15px;
+    }
+
+    .action-button {
+        background: none;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        cursor: pointer;
+        color: #757575;
+        padding: 0;
+    }
+
+    .like-form {
+        margin: 0;
+    }
+
+    .heart-icon, .comment-icon {
+        font-size: 16px;
+    }
+
+    .count {
+        font-size: 12px;
+    }
+
+    /* Categories sidebar */
+    .categories-sidebar {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+    }
+
+    .sidebar-title {
+        font-size: 16px;
+        color: #333;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .categories-container {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .category-card {
+        padding: 15px;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+    }
+
+    .category-title {
+        font-size: 14px;
+        margin-bottom: 5px;
+        color: #333;
+    }
+
+    .category-description {
+        font-size: 12px;
+        color: #757575;
+        margin-bottom: 5px;
+    }
+
+    .category-link {
+        font-size: 12px;
+        color: #4CAF50;
+        text-decoration: none;
+    }
+
+    .avatar-initial {
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    /* Removed media query */
+</style>
+
+<script>
+    // Optional JavaScript for enhancing the UI
+    document.addEventListener('DOMContentLoaded', function() {
+        // Focus the post input when clicking anywhere in the create post area
+        document.querySelector('.create-post').addEventListener('click', function() {
+            document.querySelector('.post-input').focus();
+        });
+    });
+</script>
+
