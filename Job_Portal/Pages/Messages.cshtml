@@ -4,108 +4,13 @@
     ViewData["Title"] = "Messages";
 }
 
-<div class="messages-container">
-    <!-- Messages content -->
-    <div class="messages-content">
-        <!-- Conversations list -->
-        <div class="conversations-list">
-            <div class="conversations-header">
-                <h2 class="section-title">All messages</h2>
-                <div class="search-box">
-                    <i class="search-icon">🔍</i>
-                    <input type="text" placeholder="Search through your messages" />
-                </div>
-            </div>
-
-            <div class="conversations">
-                @foreach (var conversation in Model.Conversations)
-                {
-                    <a href="/Messages?conversationId=@conversation.Id" class="conversation-item @(conversation.IsSelected ? "selected" : "")">
-                        <div class="conversation-avatar">
-                            <div class="avatar-placeholder">
-                                @conversation.RecipientName.Substring(0, 1)
-                            </div>
-                        </div>
-                        <div class="conversation-info">
-                            <div class="conversation-name">@conversation.RecipientName</div>
-                            <div class="conversation-preview">@conversation.LastMessage</div>
-                        </div>
-                    </a>
-                }
-            </div>
-        </div>
-
-        <!-- Message thread -->
-        <div class="message-thread">
-            @if (Model.SelectedConversation != null)
-            {
-                <div class="thread-header">
-                    <div class="thread-user">
-                        <div class="conversation-avatar">
-                            <div class="avatar-placeholder">
-                                @Model.SelectedConversation.RecipientName.Substring(0, 1)
-                            </div>
-                        </div>
-                        <div class="thread-user-info">
-                            <div class="thread-user-name">@Model.SelectedConversation.RecipientName</div>
-                            <div class="thread-user-title">@Model.SelectedConversation.RecipientTitle</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="thread-messages">
-                    @foreach (var message in Model.SelectedConversation.Messages)
-                    {
-                        <div class="message-bubble @(message.IsFromCurrentUser ? "sent" : "received")">
-                            @if (!message.IsFromCurrentUser)
-                            {
-                                <div class="message-avatar">
-                                    <div class="avatar-placeholder small">
-                                        @message.SenderName.Substring(0, 1)
-                                    </div>
-                                </div>
-                            }
-                            <div class="message-content">
-                                <div class="message-text">@message.Content</div>
-                            </div>
-                            @if (message.IsFromCurrentUser)
-                            {
-                                <div class="message-avatar">
-                                    <div class="avatar-placeholder small">
-                                        Y
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                    }
-                </div>
-
-                <div class="message-input">
-                    <form method="post" asp-page-handler="SendMessage" asp-route-conversationId="@Model.SelectedConversation.Id">
-                        <input type="text" asp-for="NewMessageContent" placeholder="Type a message..." class="message-input-field" />
-                        <button type="submit" class="send-button">Send</button>
-                    </form>
-                </div>
-            }
-            else
-            {
-                <div class="no-conversation">
-                    <p>Select a conversation to start messaging</p>
-                </div>
-            }
-        </div>
-    </div>
-</div>
-
 <style>
-    /* Overall layout */
     .messages-container {
         max-width: 1200px;
         margin: 0 auto;
         padding: 20px;
     }
 
-    /* Messages content */
     .messages-content {
         display: grid;
         grid-template-columns: 300px 1fr;
@@ -114,7 +19,6 @@
         min-height: 500px;
     }
 
-    /* Conversations list */
     .conversations-list {
         background-color: #fff;
         border-radius: 8px;
@@ -216,7 +120,6 @@
         text-overflow: ellipsis;
     }
 
-    /* Message thread */
     .message-thread {
         background-color: #fff;
         border-radius: 8px;
@@ -332,3 +235,73 @@
     }
 </style>
 
+<div class="messages-container">
+    <div class="messages-content">
+        <div class="conversations-list">
+            <div class="conversations-header">
+                <h2 class="section-title">All messages</h2>
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" placeholder="Search through your messages" />
+                </div>
+            </div>
+            <div class="conversations">
+                @foreach (var conversation in Model.Conversations)
+                {
+                    <a href="/Messages?conversationId=@conversation.Id" class="conversation-item @(conversation.IsSelected ? "selected" : "")">
+                        <div class="conversation-avatar">
+                            <div class="avatar-placeholder">
+                                @conversation.RecipientName.Substring(0, 1)
+                            </div>
+                        </div>
+                        <div class="conversation-info">
+                            <div class="conversation-name">@conversation.RecipientName</div>
+                            <div class="conversation-preview">@conversation.LastMessage</div>
+                        </div>
+                    </a>
+                }
+            </div>
+        </div>
+
+        <div class="message-thread">
+            @if (Model.SelectedConversation != null)
+            {
+                <div class="thread-header">
+                    <div class="thread-user">
+                        <div class="conversation-avatar">
+                            <div class="avatar-placeholder">
+                                @Model.SelectedConversation.RecipientName.Substring(0, 1)
+                            </div>
+                        </div>
+                        <div class="thread-user-info">
+                            <div class="thread-user-name">@Model.SelectedConversation.RecipientName</div>
+                            <div class="thread-user-title">@Model.SelectedConversation.RecipientTitle</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="thread-messages">
+                    @foreach (var message in Model.SelectedConversation.Messages)
+                    {
+                        <div class="message-bubble @(message.IsFromCurrentUser ? "sent" : "received")">
+                            @if (!message.IsFromCurrentUser)
+                            {
+                                <div class="message-avatar">
+                                    <div class="avatar-placeholder small">@message.SenderName.Substring(0, 1)</div>
+                                </div>
+                            }
+                            <div class="message-content">
+                                <div class="message-text">@message.Content</div>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="message-input">
+                    <form method="post" asp-page-handler="SendMessage" asp-route-conversationId="@Model.SelectedConversation.Id">
+                        <input type="text" asp-for="NewMessageContent" placeholder="Type a message..." class="message-input-field" />
+                        <button type="submit" class="send-button">Send</button>
+                    </form>
+                </div>
+            }
+        </div>
+    </div>
+</div>

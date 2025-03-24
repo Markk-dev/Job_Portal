@@ -17,7 +17,7 @@ namespace Job_Portal.Pages
             {
                 Id = 1,
                 AuthorName = "Mark Louis Alvarez",
-                AuthorColor = "#FFC107", // Yellow
+                AuthorColor = "#FFC107", 
                 Content = "Deep in the code, fueled by coffee and logic. Debugging, building, and making things work—one keystroke at a time.",
                 LikeCount = 5,
                 CommentCount = 2,
@@ -27,7 +27,7 @@ namespace Job_Portal.Pages
             {
                 Id = 2,
                 AuthorName = "Mark Vincent Madrid",
-                AuthorColor = "#FFC107", // Yellow
+                AuthorColor = "#FFC107",
                 Content = "Alright guys, let's be real. How many times have you used just one more handle and ended up rewriting half the project? 😅 Currently deep in a coding session refactoring things I wrote just a couple hours ago.",
                 LikeCount = 3,
                 CommentCount = 1,
@@ -36,8 +36,8 @@ namespace Job_Portal.Pages
             new Post
             {
                 Id = 3,
-                AuthorName = "Carl Renan Benavente",
-                AuthorColor = "#FFC107", // Yellow
+                AuthorName = "Carl Kenzo Benavente",
+                AuthorColor = "#FFC107",
                 Content = "Spent the last 3 hours debugging a problem, only to realize the issue was a single missing bracket. At this point, I think my code is just messing with me for fun.",
                 LikeCount = 7,
                 CommentCount = 3,
@@ -46,8 +46,8 @@ namespace Job_Portal.Pages
             new Post
             {
                 Id = 4,
-                AuthorName = "Judith Jude Almaden",
-                AuthorColor = "#FFC107", // Yellow
+                AuthorName = "Justin Jude Almaden",
+                AuthorColor = "#FFC107",
                 Content = "When your code finally compiles without errors, but now it does the exact opposite of what you wanted! 😂",
                 LikeCount = 10,
                 CommentCount = 5,
