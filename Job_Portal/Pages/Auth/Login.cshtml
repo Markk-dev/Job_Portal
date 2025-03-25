@@ -1,0 +1,192 @@
+﻿@page
+@model Job_Portal.Pages.Auth.LoginModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="auth-container">
+    <h1 class="auth-title">Your work in one place</h1>
+
+    <p class="auth-terms">
+        By continuing, you agree to our Terms of Use and Privacy Policy
+    </p>
+
+    <div class="social-buttons">
+        <form method="post" asp-page-handler="SocialLogin" asp-route-provider="Google">
+            <button type="submit" class="social-button google-button">
+                <span class="social-icon">G</span>
+                <span class="social-text">Continue with Google</span>
+            </button>
+        </form>
+
+        <form method="post" asp-page-handler="SocialLogin" asp-route-provider="Facebook">
+            <button type="submit" class="social-button facebook-button">
+                <span class="social-icon">f</span>
+                <span class="social-text">Continue with Facebook</span>
+            </button>
+        </form>
+
+        <form method="post" asp-page-handler="SocialLogin" asp-route-provider="Apple">
+            <button type="submit" class="social-button apple-button">
+                <span class="social-icon">⌘</span>
+                <span class="social-text">Continue with Apple</span>
+            </button>
+        </form>
+    </div>
+
+    <div class="divider">
+        <span class="divider-text">or</span>
+    </div>
+
+    <form method="post" asp-page-handler="ContinueWithEmail" class="email-form">
+        <div class="form-group">
+            <input type="email" asp-for="LoginInput.Email" class="form-control" placeholder="Enter email" />
+            <span asp-validation-for="LoginInput.Email" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="email-button">Continue with email</button>
+    </form>
+
+    <div class="auth-links">
+        <p>
+            Already have an account? <a asp-page="/Auth/Login" class="auth-link">Sign in</a>
+        </p>
+    </div>
+</div>
+
+<style>
+    body {
+        background-color: #f5f5f5;
+    }
+
+    .auth-container {
+        max-width: 400px;
+        margin: 40px auto;
+        padding: 20px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .auth-title {
+        font-size: 24px;
+        font-weight: bold;
+        color: #4CAF50;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .auth-terms {
+        font-size: 14px;
+        color: #666;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .social-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .social-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 10px 15px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+        background-color: white;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+        .social-button:hover {
+            background-color: #f5f5f5;
+        }
+
+    .social-icon {
+        margin-right: 10px;
+        font-weight: bold;
+    }
+
+    .social-text {
+        flex: 1;
+        text-align: center;
+    }
+
+    .divider {
+        display: flex;
+        align-items: center;
+        margin: 20px 0;
+    }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            border-bottom: 1px solid #ddd;
+        }
+
+    .divider-text {
+        padding: 0 10px;
+        color: #666;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px 15px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+    }
+
+    .email-button {
+        width: 100%;
+        padding: 10px 15px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+        .email-button:hover {
+            background-color: #45a049;
+        }
+
+    .auth-links {
+        margin-top: 20px;
+        text-align: center;
+        font-size: 14px;
+    }
+
+    .auth-link {
+        color: #4CAF50;
+        text-decoration: none;
+    }
+
+        .auth-link:hover {
+            text-decoration: underline;
+        }
+
+    .text-danger {
+        color: #dc3545;
+        font-size: 14px;
+        display: block;
+        margin-top: 5px;
+    }
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

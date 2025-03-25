@@ -30,11 +30,9 @@
                         <a asp-page-handler="SelectJob" asp-route-jobId="@job.Id" class="select-job-link">
                             <div class="job-card-inner"></div>
                         </a>
-                        <form method="post" asp-page-handler="Apply" asp-route-jobId="@job.Id">
-                            <button type="submit" class="easy-apply-btn">
-                                <i class="apply-icon">✓</i> Easy Apply
-                            </button>
-                        </form>
+                        <button type="button" class="easy-apply-btn" onclick="openJobModal(@job.Id, '@job.CompanyName', '@job.Title', '@job.Overview', @job.MinSalary, @job.MaxSalary)">
+                            <i class="apply-icon">✓</i> Easy Apply
+                        </button>
                     </div>
                 </div>
             }
@@ -57,11 +55,9 @@
                         <button class="action-btn">
                             <i class="save-icon">🔖</i>
                         </button>
-                        <form method="post" asp-page-handler="Apply" asp-route-jobId="@Model.SelectedJob.Id">
-                            <button type="submit" class="easy-apply-btn">
-                                <i class="apply-icon">✓</i> Easy Apply
-                            </button>
-                        </form>
+                        <button type="button" class="easy-apply-btn" onclick="openJobModal(@Model.SelectedJob.Id, '@Model.SelectedJob.CompanyName', '@Model.SelectedJob.Title', '@Model.SelectedJob.Overview', @Model.SelectedJob.MinSalary, @Model.SelectedJob.MaxSalary)">
+                            <i class="apply-icon">✓</i> Easy Apply
+                        </button>
                     </div>
                 </div>
 
@@ -80,6 +76,41 @@
                     </div>
                 </div>
             }
+        </div>
+    </div>
+
+    <!-- Job application modal -->
+    <div id="jobModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeJobModal()">&times;</span>
+
+            <div class="modal-job-header">
+                <div class="company-name" id="modalCompanyName"></div>
+                <h1 class="job-title" id="modalJobTitle"></h1>
+            </div>
+
+            <div class="modal-job-description" id="modalJobDescription"></div>
+
+            <div class="modal-job-salary">
+                <h3 class="section-title">Base pay range</h3>
+                <div class="salary-amount" id="modalSalaryRange"></div>
+                <div class="salary-info">Base salary range</div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="action-btn">
+                    <i class="more-icon">⋯</i>
+                </button>
+                <button class="action-btn">
+                    <i class="save-icon">🔖</i>
+                </button>
+                <form method="post" id="applyForm" asp-page-handler="Apply">
+                    <input type="hidden" id="jobIdInput" name="jobId" value="" />
+                    <button type="submit" class="easy-apply-btn">
+                        <i class="apply-icon">✓</i> Easy Apply
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 </div>
@@ -290,12 +321,111 @@
         text-decoration: none;
         color: inherit;
     }
+
+    /* Modal styles */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 100;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        overflow: auto;
+    }
+
+    .modal-content {
+        background-color: #fff;
+        margin: 10% auto;
+        width: 80%;
+        max-width: 600px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        position: relative;
+    }
+
+    .close-button {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 24px;
+        font-weight: bold;
+        cursor: pointer;
+        color: #aaa;
+    }
+
+        .close-button:hover {
+            color: #333;
+        }
+
+    .modal-job-header {
+        padding: 20px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .modal-job-description {
+        padding: 20px;
+        font-size: 14px;
+        line-height: 1.5;
+        color: #555;
+    }
+
+    .modal-job-salary {
+        padding: 20px;
+        background-color: #e8f5e9;
+        margin: 0 20px 20px 20px;
+        border-radius: 8px;
+    }
+
+    .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        padding: 0 20px 20px 20px;
+    }
 </style>
 
 <script>
-    // Optional JavaScript for enhancing the UI
+    // Function to open the modal with job details
+    function openJobModal(jobId, companyName, jobTitle, jobOverview, minSalary, maxSalary) {
+        // Prevent the default link behavior
+        event.preventDefault();
+        event.stopPropagation();
+
+        // Get the modal element
+        var modal = document.getElementById('jobModal');
+
+        // Fill modal with job data
+        document.getElementById('modalCompanyName').textContent = companyName;
+        document.getElementById('modalJobTitle').textContent = jobTitle;
+        document.getElementById('modalJobDescription').textContent = jobOverview;
+        document.getElementById('modalSalaryRange').textContent =
+            '$' + minSalary.toLocaleString() + ' — $' + maxSalary.toLocaleString() + ' (Estimated)';
+
+        // Set the job ID in the form
+        document.getElementById('jobIdInput').value = jobId;
+
+        // Show the modal
+        modal.style.display = 'block';
+    }
+
+    // Function to close the modal
+    function closeJobModal() {
+        var modal = document.getElementById('jobModal');
+        modal.style.display = 'none';
+    }
+
+    // Close the modal when clicking outside of it
+    window.onclick = function(event) {
+        var modal = document.getElementById('jobModal');
+        if (event.target == modal) {
+            closeJobModal();
+        }
+    }
+
+    // Show success message if it exists
     document.addEventListener('DOMContentLoaded', function() {
-        // Show success message if it exists
     @if (TempData["Message"] != null)
     {
         <text>
