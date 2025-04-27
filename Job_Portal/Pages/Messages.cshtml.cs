@@ -34,7 +34,7 @@ namespace Job_Portal.Pages
                 {
                     Content = NewMessageContent,
                     IsFromCurrentUser = true,
-                    SenderName = "You" // Ideally, fetch from the logged-in user
+                    SenderName = "You" 
                 });
             }
 
@@ -45,15 +45,15 @@ namespace Job_Portal.Pages
         {
             Conversations = new List<Conversation>
             {
-                new Conversation { Id = 1, RecipientName = "John Doe", RecipientTitle = "Recruiter", LastMessage = "Hello, how are you?", Messages = new List<Message>
+                new Conversation { Id = 1, RecipientName = "Mark Louie Alvarez", RecipientTitle = "Team Developer", LastMessage = "Hey, I just pushed my PR for....", Messages = new List<Message>
                     {
-                        new Message { Content = "Hello, how are you?", IsFromCurrentUser = false, SenderName = "John Doe" },
-                        new Message { Content = "I'm good, thanks!", IsFromCurrentUser = true, SenderName = "You" }
+                        new Message { Content = "Hey, I just pushed my PR for review. When you get a chance, can you take a look?", IsFromCurrentUser = false, SenderName = "Mark Louie Alvarez" },
+                        new Message { Content = "Yep, I see it. I’ll go through it shortly and leave some comments if needed.", IsFromCurrentUser = true, SenderName = "You" }
                     }
                 },
-                new Conversation { Id = 2, RecipientName = "Jane Smith", RecipientTitle = "Hiring Manager", LastMessage = "Are you available for an interview?", Messages = new List<Message>
+                new Conversation { Id = 2, RecipientName = "Carl Kenzo Benavente", RecipientTitle = "Front-end Developer", LastMessage = "Hey, I ran into a weird....", Messages = new List<Message>
                     {
-                        new Message { Content = "Are you available for an interview?", IsFromCurrentUser = false, SenderName = "Jane Smith" }
+                        new Message { Content = "Hey, I ran into a weird bug in the payment flow. The total amount sometimes doubles on checkout. Could you check this thing out, Thanks!", IsFromCurrentUser = false, SenderName = "Carl Kenzo Benavente" }
                     }
                 }
             };

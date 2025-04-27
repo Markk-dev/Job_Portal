@@ -19,10 +19,11 @@ namespace Job_Portal.Pages
             {
                 Id = 1,
                 FullName = "User Name",
-                Bio = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut ea commodo consequat.",
+                Bio = "An aspiring IT student passionate about coding, problem-solving, and technology." +
+                " Constantly learning and exploring new innovations in software development and cybersecurity",
                 EmploymentStatus = "Student",
-                Location = "City, Country (sample)",
-                University = "XYZ State College (sample)",
+                Location = "LC, Phiippines",
+                University = "St. Anne College Lucena Inc.",
                 DegreeType = "Bachelor",
                 ResumeFileName = "Professional Resume.pdf",
                 IsResumeVisible = true
@@ -33,15 +34,13 @@ namespace Job_Portal.Pages
 
         public IActionResult OnPostUpdateResumeVisibility()
         {
-            // In a real application, this would update the database
-            // For now, we'll just redirect back to the page
+          
             return RedirectToPage();
         }
 
         public IActionResult OnPostDownloadResume()
         {
-            // In a real application, this would download the actual resume file
-            // For now, we'll just redirect back to the page
+           
             TempData["Message"] = "Resume download started!";
             return RedirectToPage();
         }

@@ -1,8 +1,14 @@
 ﻿@page
 @model Job_Portal.Pages.Auth.RegisterModel
+
 @{
     ViewData["Title"] = "Register";
+    ViewData["HideNavbar"] = true;
 }
+
+<head>
+    <link rel="stylesheet" href="~/css/global.css" asp-append-version="true" />
+</head>
 
 <div class="auth-container">
     <h1 class="auth-title">Create your account</h1>
@@ -12,26 +18,20 @@
     </p>
 
     <div class="social-buttons">
-        <form method="post" asp-page-handler="SocialLogin" asp-route-provider="Google">
-            <button type="submit" class="social-button google-button">
-                <span class="social-icon">G</span>
-                <span class="social-text">Continue with Google</span>
-            </button>
-        </form>
+        <div class="social-button google-button" style="cursor: default;">
+            <span class="social-icon">G</span>
+            <span class="social-text">Continue with Google</span>
+        </div>
 
-        <form method="post" asp-page-handler="SocialLogin" asp-route-provider="Facebook">
-            <button type="submit" class="social-button facebook-button">
-                <span class="social-icon">f</span>
-                <span class="social-text">Continue with Facebook</span>
-            </button>
-        </form>
+        <div class="social-button facebook-button" style="cursor: default;">
+            <span class="social-icon">f</span>
+            <span class="social-text">Continue with Facebook</span>
+        </div>
 
-        <form method="post" asp-page-handler="SocialLogin" asp-route-provider="Apple">
-            <button type="submit" class="social-button apple-button">
-                <span class="social-icon">⌘</span>
-                <span class="social-text">Continue with Apple</span>
-            </button>
-        </form>
+        <div class="social-button apple-button" style="cursor: default;">
+            <span class="social-icon">⌘</span>
+            <span class="social-text">Continue with Apple</span>
+        </div>
     </div>
 
     <div class="divider">
@@ -40,27 +40,26 @@
 
     <form method="post" class="register-form">
         <div class="form-group">
-            <input type="text" asp-for="RegisterInput.FullName" class="form-control" placeholder="Full name" />
-            <span asp-validation-for="RegisterInput.FullName" class="text-danger"></span>
+            <input name="Username" class="form-control" placeholder="Username" required />
         </div>
 
         <div class="form-group">
-            <input type="email" asp-for="RegisterInput.Email" class="form-control" placeholder="Email address" />
-            <span asp-validation-for="RegisterInput.Email" class="text-danger"></span>
+            <input name="Email" type="email" class="form-control" placeholder="Email" required />
         </div>
 
         <div class="form-group">
-            <input type="password" asp-for="RegisterInput.Password" class="form-control" placeholder="Password" />
-            <span asp-validation-for="RegisterInput.Password" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <input type="password" asp-for="RegisterInput.ConfirmPassword" class="form-control" placeholder="Confirm password" />
-            <span asp-validation-for="RegisterInput.ConfirmPassword" class="text-danger"></span>
+            <input name="Password" type="password" class="form-control" placeholder="Password" required />
         </div>
 
         <button type="submit" class="email-button">Create account</button>
     </form>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="text-danger">
+            @Model.ErrorMessage
+        </div>
+    }
 
     <div class="auth-links">
         <p>
@@ -118,9 +117,9 @@
         transition: background-color 0.2s;
     }
 
-        .social-button:hover {
-            background-color: #f5f5f5;
-        }
+    .social-button:hover {
+        background-color: #f5f5f5;
+    }
 
     .social-icon {
         margin-right: 10px;
@@ -138,12 +137,12 @@
         margin: 20px 0;
     }
 
-        .divider::before,
-        .divider::after {
-            content: "";
-            flex: 1;
-            border-bottom: 1px solid #ddd;
-        }
+    .divider::before,
+    .divider::after {
+        content: "";
+        flex: 1;
+        border-bottom: 1px solid #ddd;
+    }
 
     .divider-text {
         padding: 0 10px;
@@ -174,9 +173,9 @@
         transition: background-color 0.2s;
     }
 
-        .email-button:hover {
-            background-color: #45a049;
-        }
+    .email-button:hover {
+        background-color: #45a049;
+    }
 
     .auth-links {
         margin-top: 20px;
@@ -189,9 +188,9 @@
         text-decoration: none;
     }
 
-        .auth-link:hover {
-            text-decoration: underline;
-        }
+    .auth-link:hover {
+        text-decoration: underline;
+    }
 
     .text-danger {
         color: #dc3545;
@@ -204,4 +203,5 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+
 

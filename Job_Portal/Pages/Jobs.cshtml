@@ -3,6 +3,11 @@
 @{
     ViewData["Title"] = "Jobs";
 }
+<head>
+    <link rel="stylesheet" href="~/css/job.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/global.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
 
 <div class="jobs-container">
     <!-- Search bar -->
@@ -31,7 +36,7 @@
                             <div class="job-card-inner"></div>
                         </a>
                         <button type="button" class="easy-apply-btn" onclick="openJobModal(@job.Id, '@job.CompanyName', '@job.Title', '@job.Overview', @job.MinSalary, @job.MaxSalary)">
-                            <i class="apply-icon">✓</i> Easy Apply
+                            <i class="apply-icon">✓</i> Select
                         </button>
                     </div>
                 </div>
@@ -115,308 +120,34 @@
     </div>
 </div>
 
-<style>
-    /* Overall layout */
-    .jobs-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0;
-    }
-
-    /* Search bar */
-    .search-container {
-        padding: 15px;
-        border-bottom: 1px solid #e0e0e0;
-        background-color: #fff;
-    }
-
-    .search-box {
-        display: flex;
-        align-items: center;
-        background-color: #f0f0f0;
-        border-radius: 20px;
-        padding: 8px 15px;
-        max-width: 400px;
-        margin: 0 auto;
-    }
-
-    .search-icon {
-        margin-right: 10px;
-        color: #757575;
-    }
-
-    .search-box input {
-        border: none;
-        background: transparent;
-        width: 100%;
-        outline: none;
-        font-size: 14px;
-    }
-
-    /* Jobs content */
-    .jobs-content {
-        display: grid;
-        grid-template-columns: 300px 1fr;
-        gap: 20px;
-        padding: 20px;
-    }
-
-    /* Job listings */
-    .job-listings {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-    }
-
-    .job-card {
-        background-color: #f9f9f9;
-        border-radius: 8px;
-        padding: 15px;
-        position: relative;
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-
-        .job-card.selected {
-            background-color: #fff;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-    .job-card-inner {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 1;
-    }
-
-    .company-name {
-        font-size: 14px;
-        color: #555;
-        margin-bottom: 5px;
-    }
-
-    .job-title {
-        font-size: 18px;
-        font-weight: bold;
-        color: #4CAF50;
-        margin: 0 0 5px 0;
-    }
-
-    .job-location {
-        font-size: 14px;
-        color: #666;
-        margin-bottom: 5px;
-    }
-
-    .job-salary {
-        font-size: 14px;
-        color: #666;
-    }
-
-    .job-actions {
-        display: flex;
-        justify-content: flex-end;
-        margin-top: 10px;
-        position: relative;
-        z-index: 2;
-    }
-
-    .easy-apply-btn {
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        border-radius: 20px;
-        padding: 5px 15px;
-        font-size: 14px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
-
-    .apply-icon {
-        font-size: 12px;
-    }
-
-    /* Job details */
-    .job-details {
-        background-color: #fff;
-        border-radius: 8px;
-        border: 1px solid #e0e0e0;
-        overflow: hidden;
-    }
-
-    .job-header {
-        display: flex;
-        justify-content: space-between;
-        padding: 20px;
-        border-bottom: 1px solid #e0e0e0;
-    }
-
-    .job-header-info {
-        flex: 1;
-    }
-
-    .job-header-actions {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .action-btn {
-        background: none;
-        border: 1px solid #e0e0e0;
-        border-radius: 4px;
-        width: 36px;
-        height: 36px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-    }
-
-    .job-section {
-        padding: 20px;
-        border-bottom: 1px solid #e0e0e0;
-    }
-
-    .section-title {
-        font-size: 16px;
-        font-weight: bold;
-        margin-bottom: 10px;
-        color: #333;
-    }
-
-    .job-overview {
-        font-size: 14px;
-        line-height: 1.5;
-        color: #555;
-    }
-
-    .salary-range {
-        margin-top: 10px;
-    }
-
-    .salary-amount {
-        font-size: 16px;
-        font-weight: bold;
-        color: #333;
-    }
-
-    .salary-period {
-        font-weight: normal;
-        font-size: 14px;
-        color: #666;
-    }
-
-    .salary-info {
-        font-size: 14px;
-        color: #666;
-        margin-top: 5px;
-    }
-
-    .select-job-link {
-        text-decoration: none;
-        color: inherit;
-    }
-
-    /* Modal styles */
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 100;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        overflow: auto;
-    }
-
-    .modal-content {
-        background-color: #fff;
-        margin: 10% auto;
-        width: 80%;
-        max-width: 600px;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        position: relative;
-    }
-
-    .close-button {
-        position: absolute;
-        top: 10px;
-        right: 15px;
-        font-size: 24px;
-        font-weight: bold;
-        cursor: pointer;
-        color: #aaa;
-    }
-
-        .close-button:hover {
-            color: #333;
-        }
-
-    .modal-job-header {
-        padding: 20px;
-        border-bottom: 1px solid #e0e0e0;
-    }
-
-    .modal-job-description {
-        padding: 20px;
-        font-size: 14px;
-        line-height: 1.5;
-        color: #555;
-    }
-
-    .modal-job-salary {
-        padding: 20px;
-        background-color: #e8f5e9;
-        margin: 0 20px 20px 20px;
-        border-radius: 8px;
-    }
-
-    .modal-actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-        padding: 0 20px 20px 20px;
-    }
-</style>
 
 <script>
-    // Function to open the modal with job details
+    
     function openJobModal(jobId, companyName, jobTitle, jobOverview, minSalary, maxSalary) {
-        // Prevent the default link behavior
         event.preventDefault();
         event.stopPropagation();
 
-        // Get the modal element
+        // For Modal
         var modal = document.getElementById('jobModal');
 
-        // Fill modal with job data
+
         document.getElementById('modalCompanyName').textContent = companyName;
         document.getElementById('modalJobTitle').textContent = jobTitle;
         document.getElementById('modalJobDescription').textContent = jobOverview;
         document.getElementById('modalSalaryRange').textContent =
             '$' + minSalary.toLocaleString() + ' — $' + maxSalary.toLocaleString() + ' (Estimated)';
 
-        // Set the job ID in the form
+
         document.getElementById('jobIdInput').value = jobId;
 
-        // Show the modal
         modal.style.display = 'block';
     }
 
-    // Function to close the modal
+
     function closeJobModal() {
         var modal = document.getElementById('jobModal');
         modal.style.display = 'none';
     }
-
-    // Close the modal when clicking outside of it
     window.onclick = function(event) {
         var modal = document.getElementById('jobModal');
         if (event.target == modal) {
@@ -424,7 +155,6 @@
         }
     }
 
-    // Show success message if it exists
     document.addEventListener('DOMContentLoaded', function() {
     @if (TempData["Message"] != null)
     {

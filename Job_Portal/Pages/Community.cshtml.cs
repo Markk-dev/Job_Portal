@@ -16,7 +16,7 @@ namespace Job_Portal.Pages
             new Post
             {
                 Id = 1,
-                AuthorName = "Mark Louis Alvarez",
+                AuthorName = "Mark Louie Alvarez",
                 AuthorColor = "#FFC107", 
                 Content = "Deep in the code, fueled by coffee and logic. Debugging, building, and making things work—one keystroke at a time.",
                 LikeCount = 5,
@@ -48,7 +48,7 @@ namespace Job_Portal.Pages
                 Id = 4,
                 AuthorName = "Justin Jude Almaden",
                 AuthorColor = "#FFC107",
-                Content = "When your code finally compiles without errors, but now it does the exact opposite of what you wanted! 😂",
+                Content = "When your code finally compiles without errors, but now it does the exact opposite of what you wanted!",
                 LikeCount = 10,
                 CommentCount = 5,
                 PostedAt = DateTime.Now.AddHours(-8)
@@ -61,31 +61,35 @@ namespace Job_Portal.Pages
             {
                 Id = 1,
                 Name = "Consulting",
-                Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla faucibus."
+                Description = "Providing expert insights and strategies to help businesses improve efficiency," +
+                "solve problems, and achieve growth."
             },
             new Category
             {
                 Id = 2,
                 Name = "Advertising",
-                Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla faucibus."
+                Description = " Crafting creative campaigns and marketing strategies to boost brand" +
+                " awareness and attract customers."
             },
             new Category
             {
                 Id = 3,
                 Name = "Finance",
-                Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla faucibus."
+                Description = "Managing financial resources, investments, and planning to ensure" +
+                " stability and long-term growth."
             },
             new Category
             {
                 Id = 4,
                 Name = "Accounting",
-                Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla faucibus."
+                Description = "Recording, analyzing, and maintaining financial transactions to ensure" +
+                " accuracy and regulatory compliance."
             }
         };
 
         public void OnGet()
         {
-            // Page load logic
+          
         }
 
         public IActionResult OnPost()
@@ -95,16 +99,16 @@ namespace Job_Portal.Pages
                 var newPost = new Post
                 {
                     Id = this.Posts.Count + 1,
-                    AuthorName = "Current User", // In a real app, get from authentication
-                    AuthorColor = "#4CAF50", // Green for current user
+                    AuthorName = "Current User", 
+                    AuthorColor = "#4CAF50",
                     Content = NewPostContent,
                     LikeCount = 0,
                     CommentCount = 0,
                     PostedAt = DateTime.Now
                 };
 
-                this.Posts.Insert(0, newPost); // Add to beginning of list
-                NewPostContent = string.Empty; // Clear the input
+                this.Posts.Insert(0, newPost); 
+                NewPostContent = string.Empty; 
             }
 
             return RedirectToPage();

@@ -1,8 +1,12 @@
-﻿@page
+﻿
+@page
 @model Job_Portal.Pages.Auth.LoginModel
 @{
     ViewData["Title"] = "Login";
 }
+<head>
+    <link rel="stylesheet" href="~/css/global.css" asp-append-version="true" />
+</head>
 
 <div class="auth-container">
     <h1 class="auth-title">Your work in one place</h1>
@@ -12,44 +16,47 @@
     </p>
 
     <div class="social-buttons">
-        <form method="post" asp-page-handler="SocialLogin" asp-route-provider="Google">
-            <button type="submit" class="social-button google-button">
-                <span class="social-icon">G</span>
-                <span class="social-text">Continue with Google</span>
-            </button>
-        </form>
+        <div class="social-button google-button" style="cursor: default;">
+            <span class="social-icon">G</span>
+            <span class="social-text">Continue with Google</span>
+        </div>
 
-        <form method="post" asp-page-handler="SocialLogin" asp-route-provider="Facebook">
-            <button type="submit" class="social-button facebook-button">
-                <span class="social-icon">f</span>
-                <span class="social-text">Continue with Facebook</span>
-            </button>
-        </form>
+        <div class="social-button facebook-button" style="cursor: default;">
+            <span class="social-icon">f</span>
+            <span class="social-text">Continue with Facebook</span>
+        </div>
 
-        <form method="post" asp-page-handler="SocialLogin" asp-route-provider="Apple">
-            <button type="submit" class="social-button apple-button">
-                <span class="social-icon">⌘</span>
-                <span class="social-text">Continue with Apple</span>
-            </button>
-        </form>
+        <div class="social-button apple-button" style="cursor: default;">
+            <span class="social-icon">⌘</span>
+            <span class="social-text">Continue with Apple</span>
+        </div>
     </div>
+
 
     <div class="divider">
         <span class="divider-text">or</span>
     </div>
 
-    <form method="post" asp-page-handler="ContinueWithEmail" class="email-form">
+    <form method="post" class="email-form">
         <div class="form-group">
-            <input type="email" asp-for="LoginInput.Email" class="form-control" placeholder="Enter email" />
-            <span asp-validation-for="LoginInput.Email" class="text-danger"></span>
+            <input name="Username" class="form-control" placeholder="Username" required/>
         </div>
 
-        <button type="submit" class="email-button">Continue with email</button>
+        <div class="form-group">
+            <input name="Password" type="password" class="form-control" placeholder="Password" required />
+        </div>
+
+        <button type="submit" class="email-button">Login</button>
     </form>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <p class="text-danger">@Model.ErrorMessage</p>
+    }
 
     <div class="auth-links">
         <p>
-            Already have an account? <a asp-page="/Auth/Login" class="auth-link">Sign in</a>
+            Don't have an account? <a asp-page="/Auth/Register" class="auth-link">Sign up here</a>
         </p>
     </div>
 </div>

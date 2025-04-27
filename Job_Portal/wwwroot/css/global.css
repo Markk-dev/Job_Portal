@@ -1,10 +1,8 @@
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Manrope:wght@400;500;700&display=swap');
 
 * {
     box-sizing: border-box;
 }
-
 
 body {
     position: relative;
@@ -12,21 +10,17 @@ body {
     padding: 0;
     overflow-x: hidden;
     background: var(--bg-color);
-    font-family: 'Satoshi','Inter';
+    font-family: 'Satoshi', 'Inter', 'Manrope', sans-serif;
 }
 
-
 :root {
-/*    Main Colors*/
+    /* Main Colors */
     --primary-color: #14A800;
     --accent: #FCBF49;
     --text-color: #000000;
-
-/*    Utilities*/
+    /* Utilities */
     --bg-color: #F3F9F5;
     --bg-header: #FAFAFA;
     --icon-color: #000000;
     --border: #B5B5B5;
 }
-
-

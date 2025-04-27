@@ -1,12 +1,27 @@
+//using Microsoft.AspNetCore.Mvc;
+//using Microsoft.AspNetCore.Mvc.RazorPages;
+
+//namespace Job_Portal.Pages
+//{
+//    public class IndexModel : PageModel
+//    {
+//        public void OnGet()
+//        {
+//        }
+//    }
+//}
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Job_Portal.Pages
+namespace Job_Portal.Pages;
+
+public class IndexModel : PageModel
 {
-    public class IndexModel : PageModel
+    public IActionResult OnGet()
     {
-        public void OnGet()
-        {
-        }
+        if (HttpContext.Session.GetString("username") == null)
+            return RedirectToPage("/Auth/Login");
+
+        return Page();
     }
 }
