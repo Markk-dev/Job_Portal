@@ -45,7 +45,8 @@ app.Use(async (context, next) =>
     var allowedPaths = new[]
     {
         "/Auth/Login",
-        "/Auth/Register"
+        "/Auth/Register",
+        "/Auth/Forgot"
     };
 
     var isAllowed = allowedPaths.Any(path =>
