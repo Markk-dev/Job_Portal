@@ -160,7 +160,7 @@
     });
 
 
-    document.getElementById('updatePasswordButton').addEventListener('click', async () => {
+        document.getElementById('updatePasswordButton').addEventListener('click', async () => {
         const newPassword = document.getElementById('newPasswordInput').value;
         const confirmPassword = document.getElementById('confirmPasswordInput').value;
 
@@ -179,13 +179,31 @@
             return;
         }
 
+        try {
+            const response = await fetch('/Auth/Forgot?handler=UpdatePassword', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                },
+                body: JSON.stringify({ email: userEmail, newPassword: newPassword })
+            });
 
-        showMessage('Password updated successfully!', true);
+            const result = await response.json();
 
-
-        setTimeout(() => {
-            window.location.href = "/Auth/Login";
-        }, 2000);
+            if (result.success) {
+                showMessage('Password updated successfully!', true);
+                setTimeout(() => {
+                    window.location.href = "/Auth/Login";
+                }, 2000);
+            } else {
+                showMessage(result.message || 'Failed to update password.', false);
+            }
+        } catch (error) {
+            console.error("Error updating password:", error);
+            showMessage('An error occurred. Please try again.', false);
+        }
     });
+
 
 </script>

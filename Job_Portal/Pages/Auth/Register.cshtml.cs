@@ -35,7 +35,7 @@ namespace Job_Portal.Pages.Auth
                 return Page();
             }
 
-            // Sanitize inputs (remove such trailing spaces)
+            // Sanitize inputs (remove trailings)
             Username = Username.Trim();
             Email = Email.Trim();
 
