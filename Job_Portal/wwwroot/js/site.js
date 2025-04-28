@@ -22,7 +22,6 @@ function showMessage(message, isSuccess) {
 
 document.getElementById('forgotPasswordForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-
     const email = document.getElementById('emailInput').value.trim();
     const submitButton = document.getElementById('submitButton');
 
@@ -32,13 +31,22 @@ document.getElementById('forgotPasswordForm').addEventListener('submit', async (
     }
 
     submitButton.disabled = true;
-    submitButton.textContent = "Sending...";
+    submitButton.textContent = "Checking...";
 
     try {
+        // First verify the email exists in your database
+        const verifyResponse = await axios.post('/Auth/VerifyEmail', { email });
 
+        if (!verifyResponse.data.success) {
+            showMessage(verifyResponse.data.errorMessage || 'Email not found in our system.', false);
+            submitButton.disabled = false;
+            submitButton.textContent = "Send OTP";
+            return;
+        }
+
+        // Now generate and send OTP
         generatedOTP = generateOTP();
         userEmail = email;
-
 
         const response = await axios.post("https://api.emailjs.com/api/v1.0/email/send", {
             service_id: "service_hxb425t",
@@ -53,14 +61,11 @@ document.getElementById('forgotPasswordForm').addEventListener('submit', async (
 
         console.log("EmailJS API Response:", response.data);
         showMessage("OTP sent to your email!", true);
-
-
         document.getElementById('otpSection').style.display = 'block';
-
     } catch (error) {
         console.error("Full error:", error.response?.data || error.message);
         showMessage(
-            `Failed to send OTP: ${error.response?.data || "Network error"}`,
+            `Failed to send OTP: ${error.response?.data?.errorMessage || error.message || "Network error"}`,
             false
         );
     } finally {
@@ -112,7 +117,4 @@ document.getElementById('updatePasswordButton').addEventListener('click', async 
     showMessage('Password updated successfully!', true);
 
 
-    setTimeout(() => {
-        window.location.href = "/Auth/Login";
-    }, 2000);
 });

@@ -7,15 +7,18 @@
 <head>
     <link rel="stylesheet" href="~/css/global.css" asp-append-version="true" />
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link href="~/css/forgot.css" rel="stylesheet" />
 </head>
 <div class="auth-container">
     <h1 class="auth-title">Password Recovery</h1>
     <p class="auth-terms">
         Enter the email address associated with your account.
     </p>
+
     <form method="post" class="register-form" id="forgotPasswordForm">
+        @Html.AntiForgeryToken()
         <div class="form-group">
-            <input name="UsernameOrEmail" id="emailInput" class="form-control" placeholder="Email" required />
+            <input name="Email" id="emailInput" class="form-control" placeholder="Email" required />
         </div>
         <button type="submit" class="email-button" id="submitButton">Send OTP</button>
     </form>
@@ -41,10 +44,12 @@
 
     @if (!string.IsNullOrEmpty(Model.ErrorMessage))
     {
-        <div class="text-danger">
+        <div id="statusMessage" class="error-message" style="display: block;">
             @Model.ErrorMessage
         </div>
     }
+
+
     <div id="statusMessage"></div>
     <div class="auth-links">
         <p>
@@ -53,138 +58,134 @@
     </div>
 </div>
 
-<style>
-    body {
-        background-color: #f5f5f5;
+
+<script>
+    let generatedOTP = '';
+    let userEmail = '';
+
+    function generateOTP() {
+        return Math.floor(100000 + Math.random() * 900000).toString();
     }
 
-    .auth-container {
-        max-width: 400px;
-        margin: 40px auto;
-        padding: 20px;
-        background-color: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
+    function showMessage(message, isSuccess) {
+        const statusElement = document.getElementById('statusMessage');
+        statusElement.textContent = message;
+        statusElement.className = isSuccess ? 'success-message' : 'error-message';
+        statusElement.style.display = 'block';
 
-    .auth-title {
-        font-size: 24px;
-        font-weight: bold;
-        color: #4CAF50;
-        text-align: center;
-        margin-bottom: 20px;
-    }
 
-    .auth-terms {
-        font-size: 14px;
-        color: #666;
-        text-align: center;
-        margin-bottom: 20px;
-    }
-
-    .form-group {
-        margin-bottom: 15px;
-    }
-
-    .form-control {
-        width: 100%;
-        padding: 10px 15px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        font-size: 16px;
-    }
-
-    .email-button {
-        width: 100%;
-        padding: 10px 15px;
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        font-size: 16px;
-        cursor: pointer;
-        transition: background-color 0.2s;
-    }
-
-        .email-button:hover {
-            background-color: #45a049;
-        }
-
-    .auth-links {
-        margin-top: 20px;
-        text-align: center;
-        font-size: 14px;
-    }
-
-    .auth-link {
-        color: #4CAF50;
-        text-decoration: none;
-    }
-
-        .auth-link:hover {
-            text-decoration: underline;
-        }
-
-    .text-danger {
-        color: #dc3545;
-        font-size: 14px;
-        display: block;
-        margin-top: 5px;
-    }
-
-    #statusMessage {
-        margin-top: 10px;
-        padding: 8px;
-        border-radius: 4px;
-        text-align: center;
-        display: none;
-    }
-
-    .success-message {
-        background-color: #d4edda;
-        color: #155724;
-        border: 1px solid #c3e6cb;
-    }
-
-    .error-message {
-        background-color: #f8d7da;
-        color: #721c24;
-        border: 1px solid #f5c6cb;
-    }
-
-    #otpSection, #newPasswordSection {
-        margin-top: 20px;
-        animation: fadeIn 0.3s ease-in-out;
-    }
-
-    @@keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(10px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
+        if (isSuccess) {
+            setTimeout(() => {
+                statusElement.style.display = 'none';
+            }, 5000);
         }
     }
 
-    #otpSection, #newPasswordSection {
-        margin-top: 20px;
-        animation: fadeIn 0.3s ease-in-out;
-    }
+        document.getElementById('forgotPasswordForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-    @@keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(10px);
+        const email = document.getElementById('emailInput').value.trim();
+        const submitButton = document.getElementById('submitButton');
+
+        if (!email) {
+            showMessage('Email is required!', false);
+            return;
         }
 
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-</style>
+        submitButton.disabled = true;
+        submitButton.textContent = "Checking...";
 
-<script src="~/js/site.js"></script>
+        try {
+            // Check if email exist
+            const checkResponse = await fetch('/Auth/Forgot?handler=CheckEmail', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                },
+                body: JSON.stringify({ email: email })
+            });
+
+            const checkResult = await checkResponse.json();
+
+            if (!checkResponse.ok || !checkResult.exists) {
+                throw new Error(checkResult.message || 'Email not found');
+            }
+
+            //Only Generate if email exists
+            generatedOTP = generateOTP();
+            userEmail = email;
+
+            const response = await axios.post("https://api.emailjs.com/api/v1.0/email/send", {
+                service_id: "service_hxb425t",
+                template_id: "template_muqhzus",
+                user_id: "FqDte2dDwEqmzp5rf",
+                template_params: {
+                    user_email: email,
+                    OTP_CODE: generatedOTP,
+                    title: "Password Recovery OTP"
+                }
+            });
+
+            console.log("EmailJS API Response:", response.data);
+            showMessage("OTP sent to your email!", true);
+            document.getElementById('otpSection').style.display = 'block';
+
+        } catch (error) {
+            console.error("Error:", error.message);
+            showMessage(error.message, false);
+        } finally {
+            submitButton.disabled = false;
+            submitButton.textContent = "Resend OTP";
+        }
+    });
+
+
+    document.getElementById('verifyOtpButton').addEventListener('click', () => {
+        const enteredOTP = document.getElementById('otpInput').value.trim();
+
+        if (!enteredOTP) {
+            showMessage('Please enter the OTP', false);
+            return;
+        }
+
+        if (enteredOTP === generatedOTP) {
+            showMessage('OTP verified successfully!', true);
+
+            document.getElementById('otpSection').style.display = 'none';
+            document.getElementById('newPasswordSection').style.display = 'block';
+        } else {
+            showMessage('Invalid OTP. Please try again.', false);
+        }
+    });
+
+
+    document.getElementById('updatePasswordButton').addEventListener('click', async () => {
+        const newPassword = document.getElementById('newPasswordInput').value;
+        const confirmPassword = document.getElementById('confirmPasswordInput').value;
+
+        if (!newPassword || !confirmPassword) {
+            showMessage('Both password fields are required', false);
+            return;
+        }
+
+        if (newPassword !== confirmPassword) {
+            showMessage('Passwords do not match', false);
+            return;
+        }
+
+        if (newPassword.length < 8) {
+            showMessage('Password must be at least 8 characters', false);
+            return;
+        }
+
+
+        showMessage('Password updated successfully!', true);
+
+
+        setTimeout(() => {
+            window.location.href = "/Auth/Login";
+        }, 2000);
+    });
+
+</script>
