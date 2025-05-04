@@ -1,19 +1,29 @@
 using Job_Portal.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+        options.JsonSerializerOptions.WriteIndented = true;
+    });
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
         new MySqlServerVersion(new Version(8, 0, 29)))
 );
+
+builder.Services.AddScoped<CommentService>();
+
 builder.Services.AddSession();
 
 var app = builder.Build();
 
-// Changed the HTTP request pipeline (for HTTPS redirection and static files)
+// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
@@ -29,7 +39,7 @@ app.UseSession();
 
 app.UseAuthorization();
 
-// Redirect root path to /Auth/Login
+// Redirect root URL to /Community
 app.Use(async (context, next) =>
 {
     if (context.Request.Path == "/")
@@ -40,6 +50,7 @@ app.Use(async (context, next) =>
     await next();
 });
 
+// Middleware to check login session except for allowed paths
 app.Use(async (context, next) =>
 {
     var allowedPaths = new[]
@@ -63,7 +74,6 @@ app.Use(async (context, next) =>
 
     await next();
 });
-
 
 app.MapRazorPages();
 

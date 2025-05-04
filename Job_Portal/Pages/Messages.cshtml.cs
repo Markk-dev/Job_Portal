@@ -44,6 +44,7 @@ namespace Job_Portal.Pages
         private void LoadConversations()
         {
             Conversations = new List<Conversation>
+            //For now we'll be using this as placeholder data
             {
                 new Conversation { Id = 1, RecipientName = "Mark Louie Alvarez", RecipientTitle = "Team Developer", LastMessage = "Hey, I just pushed my PR for....", Messages = new List<Message>
                     {

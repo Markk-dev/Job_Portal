@@ -17,6 +17,7 @@ namespace Job_Portal.Pages
             {
                 new Job
                 {
+                    //Placeholder data for now
                     Id = 1,
                     CompanyName = "AT&T",
                     Title = "Retail Sales Associate",

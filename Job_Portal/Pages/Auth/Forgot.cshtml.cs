@@ -29,7 +29,7 @@ namespace Job_Portal.Pages.Auth
 
         public void OnGet()
         {
-            // Just display the forgot password page.
+
         }
 
         public IActionResult OnPost()
@@ -86,16 +86,16 @@ namespace Job_Portal.Pages.Auth
                 return new JsonResult(new { success = false, message = "User not found." });
             }
 
-            // Validate password
+            // Validate
             if (!IsValidPassword(request.NewPassword))
             {
                 return new JsonResult(new { success = false, message = "Password must be at least 8 characters, contain only letters and numbers, and have no spaces." });
             }
 
-            // Hash password
+            // Hash
             var hashedPassword = HashPassword(request.NewPassword);
 
-            // Update user's password
+            // Update 
             user.Password = hashedPassword;
             await _db.SaveChangesAsync();
 
@@ -112,7 +112,7 @@ namespace Job_Portal.Pages.Auth
         {
             if (password.Length < 8) return false;
 
-            // Only letters and numbers, no spaces or special characters
+            // for selected characters only
             var regex = new Regex(@"^[a-zA-Z0-9]+$");
             return regex.IsMatch(password);
         }

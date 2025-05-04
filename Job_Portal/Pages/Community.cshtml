@@ -3,104 +3,289 @@
 @{
     ViewData["Title"] = "Community";
 }
+
 <head>
     <link rel="stylesheet" href="~/css/com.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/global.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/css/modal.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
-
-<div class="community-container">
-    <!-- Left sidebar with profile -->
-    <div class="profile-sidebar">
-        <div class="profile-avatar">
-            <a asp-page="/Profile">
-                <img src="/images/Placeholder.jpg" alt="Profile" />
-            </a>
-        </div>
-    </div>
-
-    <!-- Main content area -->
-    <div class="main-content">
-        <!-- Search bar -->
-        <div class="search-container">
-            <div class="search-box">
-                <i class="search-icon">🔍</i>
-                <input type="text" placeholder="Search for feeds or conversations" />
+<body>
+    <div class="community-container">
+        <!-- Profile Sidebar -->
+        <aside class="profile-sidebar">
+            <div class="profile-avatar">
+                <a asp-page="/Profile">
+                    <img src="/images/Placeholder.jpg" alt="Profile" />
+                </a>
             </div>
-        </div>
+        </aside>
 
-        <!-- Post creation and feed -->
-        <div class="feed-container">
-            <!-- Create post -->
-            <div class="create-post">
-                <div class="post-avatar current-user">
-                    <i class="material-icons">account_circle</i>
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Search Bar -->
+            <section class="search-container">
+                <div class="search-box">
+                    <i class="search-icon">🔍</i>
+                    <input type="text" placeholder="Search for feeds or conversations" />
                 </div>
+            </section>
 
-                <form method="post" class="post-form">
-                    <input type="text" asp-for="NewPostContent" placeholder="Got something to share?" class="post-input" />
-                    <button type="submit" class="post-submit">Post</button>
-                </form>
-            </div>
+            <!-- Feed Container -->
+            <section class="feed-container">
+                <!-- Create Post -->
+                <article class="create-post">
+                    <div class="post-avatar current-user">
+                        <i class="material-icons">account_circle</i>
+                    </div>
+                    <form method="post" class="post-form">
+                        <input type="text" asp-for="NewPostContent" placeholder="Got something to share?" class="post-input" required />
+                        <button type="submit" class="post-submit">Post</button>
+                    </form>
+                </article>
 
-            <!-- Posts Here-->
-            <div class="posts-feed">
-                @foreach (var post in Model.Posts)
-                {
-                    <div class="post-item">
-                        <div class="post-avatar" style="background-color: @post.AuthorColor">
-                            <span class="avatar-initial">@post.AuthorName.Substring(0, 1)</span>
-                        </div>
-                        <div class="post-content">
-                            <div class="post-header">
-                                <span class="post-author">@post.AuthorName</span>
-                                <span class="post-time">@post.GetTimeAgo()</span>
+                <!-- Posts Feed -->
+                <div class="posts-feed">
+                    @foreach (var post in Model.Posts)
+                    {
+                        <article class="post-item">
+                            <div class="post-avatar">
+                                <span class="avatar-initial">@post.AuthorName.Substring(0, 1)</span>
                             </div>
-                            <div class="post-text">
-                                @post.Content
-                            </div>
-                            <div class="post-actions">
-                                <form method="post" asp-page-handler="LikePost" asp-route-postId="@post.Id" class="like-form">
-                                    <button type="submit" class="action-button like-button">
-                                        <i class="heart-icon">❤️</i>
-                                        <span class="count">@post.LikeCount</span>
+                            <div class="post-content">
+                                <header class="post-header">
+                                    <span class="post-author">@post.AuthorName</span>
+                                    <time class="post-time">@post.GetTimeAgo()</time>
+                                </header>
+                                <p class="post-text">@post.Content</p>
+
+                                <!-- Post Actions -->
+                                <div class="post-actions">
+                                    <form method="post" asp-page-handler="LikePost" asp-route-postId="@post.Id" class="like-form">
+                                        <button type="submit" class="action-button like-button">
+                                            <i class="heart-icon">❤️</i>
+                                            <span class="count">@post.LikeCount</span>
+                                        </button>
+                                    </form>
+
+                                    <button class="action-button comment-button" data-post-id="@post.Id" data-author="@post.AuthorName" data-content="@post.Content.Replace("\"", "&quot;")" data-likes="@post.LikeCount" data-comment-count="@post.Comments.Count">
+                                        💬 Comments (@post.Comments.Count)
                                     </button>
-                                </form>
-                                <button class="action-button comment-button">
-                                    <i class="comment-icon">💬</i>
-                                    <span class="count">@post.CommentCount</span>
-                                </button>
+
+                                    @if (HttpContext.Session.GetString("username") == post.AuthorName)
+                                    {
+                                        <form method="post" asp-page-handler="EditPost" asp-route-postId="@post.Id" class="edit-form">
+                                            <button type="submit" class="action-button edit-button">✏️</button>
+                                        </form>
+                                        <form method="post" asp-page-handler="DeletePost" asp-route-postId="@post.Id" class="delete-form">
+                                            <button type="submit" class="action-button delete-button">🗑️</button>
+                                        </form>
+                                    }
+                                </div>
+
+                                <!-- Inline Comments Section -->
+                                <section class="comments-section" id="comments-@post.Id" style="display:none;">
+                                    @foreach (var comment in post.Comments)
+                                    {
+                                        <div class="comment-item">
+                                            <strong class="comment-author">@comment.AuthorName</strong>: <span class="comment-content">@comment.Content</span>
+                                        </div>
+                                    }
+                                    <form method="post" asp-page-handler="Comment" asp-route-postId="@post.Id" class="comment-form">
+                                        <textarea asp-for="NewCommentContent" placeholder="Write a comment..." required></textarea>
+                                        <button type="submit" class="comment-submit">Post Comment</button>
+                                    </form>
+                                </section>
                             </div>
+                        </article>
+                    }
+                </div>
+            </section>
+
+            <!-- Comment Modal -->
+            <div id="commentModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Comments</h3>
+                        <span class="close-button" onclick="closeCommentModal()">&times;</span>
+                    </div>
+
+                    <div class="modal-post-preview">
+                        <div class="post-avatar">
+                            <span class="avatar-initial" id="modalAuthorInitial"></span>
                         </div>
+                        <div class="post-preview-content">
+                            <div class="post-preview-header">
+                                <span class="post-preview-author" id="modalPostAuthor"></span>
+                                <div class="post-preview-stats">
+                                    <span class="like-stat">❤️ <span id="modalLikeCount">0</span></span>
+                                    <span class="comment-stat">💬 <span id="modalCommentCount">0</span></span>
+                                </div>
+                            </div>
+                            <p class="post-preview-text" id="modalPostContent"></p>
+                        </div>
+                    </div>
+
+                    <div class="modal-divider"></div>
+
+                    <div class="modal-comments-section" id="modalComments">
+                        <!-- Comments will be populated here -->
+                    </div>
+
+                    <div class="modal-comment-form">
+                        <div class="comment-form-avatar">
+                            <i class="material-icons">account_circle</i>
+                        </div>
+                        <form method="post" id="modalCommentForm" asp-page-handler="Comment">
+                            <input type="hidden" id="modalPostId" name="postId" value="" />
+                            <textarea id="modalCommentContent" name="NewCommentContent" placeholder="Write a comment..." required></textarea>
+                            <button type="submit" class="comment-submit">
+                                <i class="material-icons">send</i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Categories Sidebar -->
+        <aside class="categories-sidebar">
+            <h3 class="sidebar-title">Explore items here</h3>
+            <div class="categories-container">
+                @foreach (var category in Model.Categories)
+                {
+                    <div class="category-card">
+                        <h4 class="category-title">@category.Name</h4>
+                        <p class="category-description">@category.Description</p>
+                        <a href="#" class="category-link">Read More</a>
                     </div>
                 }
             </div>
-        </div>
+        </aside>
     </div>
+</body>
 
-    <!-- Right sidebar with categories -->
-    <div class="categories-sidebar">
-        <h3 class="sidebar-title">Explore items here</h3>
-
-        <div class="categories-container">
-            @foreach (var category in Model.Categories)
-            {
-                <div class="category-card">
-                    <h4 class="category-title">@category.Name</h4>
-                    <p class="category-description">@category.Description</p>
-                    <a href="#" class="category-link">Read More</a>
-                </div>
-            }
-        </div>
-    </div>
-</div>
 <script>
+    // Function to open the comment modal
+    function openCommentModal(postId, authorName, postContent, likeCount, commentCount) {
+        // Get modal and populate data
+        var modal = document.getElementById('commentModal');
 
-    document.addEventListener('DOMContentLoaded', function() {
-       
-        document.querySelector('.create-post').addEventListener('click', function() {
-            document.querySelector('.post-input').focus();
+        // Populate modal content
+        document.getElementById('modalPostAuthor').textContent = authorName;
+        document.getElementById('modalAuthorInitial').textContent = authorName.charAt(0);
+        document.getElementById('modalPostContent').textContent = postContent;
+        document.getElementById('modalLikeCount').textContent = likeCount;
+        document.getElementById('modalCommentCount').textContent = commentCount;
+        document.getElementById('modalPostId').value = postId;
+
+        // Fetch and display comments for this post
+        fetchAndDisplayComments(postId);
+
+        // Display the modal with animation
+        modal.style.display = 'flex';
+        setTimeout(() => {
+            modal.querySelector('.modal-content').style.opacity = 1;
+        }, 10);
+    }
+
+    // Function to close the comment modal
+    function closeCommentModal() {
+        var modal = document.getElementById('commentModal');
+        modal.querySelector('.modal-content').style.opacity = 0;
+        setTimeout(() => {
+            modal.style.display = 'none';
+        }, 300);
+    }
+
+    // Close modal when clicking outside it
+    window.onclick = function(event) {
+        var modal = document.getElementById('commentModal');
+        if (event.target == modal) {
+            closeCommentModal();
+        }
+    }
+
+    // Function to fetch and display comments for a post
+    function fetchAndDisplayComments(postId) {
+        var commentsContainer = document.getElementById('modalComments');
+        commentsContainer.innerHTML = '<div class="loading-comments">Loading comments...</div>';
+
+        // Find the comments section for this post
+        var commentsSection = document.getElementById(`comments-${postId}`);
+
+        if (!commentsSection) {
+            commentsContainer.innerHTML = '<div class="empty-comments">Be the first to comment!</div>';
+            document.getElementById('modalCommentCount').textContent = '0';
+            return;
+        }
+
+        // Get all comments from the comments section
+        var commentItems = commentsSection.querySelectorAll('.comment-item');
+        var commentCount = commentItems.length;
+
+        // Update comment count in the modal
+        document.getElementById('modalCommentCount').textContent = commentCount;
+
+        if (commentCount === 0) {
+            commentsContainer.innerHTML = '<div class="empty-comments">Be the first to comment!</div>';
+            return;
+        }
+
+        // Clear container and add comments
+        commentsContainer.innerHTML = '';
+
+        // Loop through each comment item and add it to the modal
+        commentItems.forEach(function(item) {
+            var authorElem = item.querySelector('.comment-author');
+            var contentElem = item.querySelector('.comment-content');
+
+            if (authorElem && contentElem) {
+                var author = authorElem.textContent;
+                var content = contentElem.textContent;
+
+                var commentHTML = `
+                <div class="modal-comment">
+                    <div class="comment-avatar">
+                        <span class="avatar-initial">${author.charAt(0)}</span>
+                    </div>
+                    <div class="comment-content">
+                        <div class="comment-header">
+                            <span class="comment-author">${author}</span>
+                            <time class="comment-time">Just now</time>
+                        </div>
+                        <p class="comment-text">${content}</p>
+                    </div>
+                </div>`;
+
+                commentsContainer.innerHTML += commentHTML;
+            }
         });
+    }
+
+    // Initialize when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set up event listeners for comment buttons
+        document.querySelectorAll('.comment-button').forEach(function(button) {
+            button.addEventListener('click', function() {
+                const postId = this.getAttribute('data-post-id');
+                const authorName = this.getAttribute('data-author');
+                const postContent = this.getAttribute('data-content');
+                const likeCount = this.getAttribute('data-likes');
+                const commentCount = this.getAttribute('data-comment-count');
+
+                openCommentModal(postId, authorName, postContent, likeCount, commentCount);
+            });
+        });
+
+        // Make textarea auto-expand
+        const commentTextarea = document.getElementById('modalCommentContent');
+        if (commentTextarea) {
+            commentTextarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = (this.scrollHeight > 120 ? 120 : this.scrollHeight) + 'px';
+            });
+        }
     });
 </script>
-

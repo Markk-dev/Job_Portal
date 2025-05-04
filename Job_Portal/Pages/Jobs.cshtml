@@ -10,7 +10,6 @@
 </head>
 
 <div class="jobs-container">
-    <!-- Search bar -->
     <div class="search-container">
         <div class="search-box">
             <i class="search-icon">🔍</i>
@@ -18,9 +17,9 @@
         </div>
     </div>
 
-    <!-- Jobs content -->
+
     <div class="jobs-content">
-        <!-- Job listings -->
+
         <div class="job-listings">
             @foreach (var job in Model.Jobs)
             {
@@ -43,7 +42,7 @@
             }
         </div>
 
-        <!-- Job details -->
+
         <div class="job-details">
             @if (Model.SelectedJob != null)
             {
@@ -84,7 +83,6 @@
         </div>
     </div>
 
-    <!-- Job application modal -->
     <div id="jobModal" class="modal">
         <div class="modal-content">
             <span class="close-button" onclick="closeJobModal()">&times;</span>
