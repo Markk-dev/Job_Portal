@@ -36,10 +36,16 @@
 
 .search-box {
     display: flex;
+    flex-direction: row;
     align-items: center;
     background-color: #f0f0f0;
     border-radius: 20px;
-    padding: 8px 15px;
+    padding: 5px 10px;
+}
+.search-and-add {
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
 .search-icon {
@@ -50,28 +56,27 @@
 .search-box input {
     border: none;
     background: transparent;
-    width: 100%;
+    width: 180px;
     outline: none;
-    font-size: 14px;
+    font-size: 11px;
 }
 
 .conversations {
     flex: 1;
-    overflow-y: auto;
 }
 
 .conversation-item {
     display: flex;
     align-items: center;
     padding: 15px;
-    border-bottom: 1px solid #f0f0f0;
     text-decoration: none;
     color: inherit;
     transition: background-color 0.2s;
 }
 
     .conversation-item:hover, .conversation-item.selected {
-        background-color: #f9f9f9;
+        color: var(--primary-color);
+        background-color: var(--primary-light);
     }
 
 .conversation-avatar {
