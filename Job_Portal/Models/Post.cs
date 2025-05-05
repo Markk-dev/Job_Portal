@@ -11,6 +11,7 @@ namespace Job_Portal.Models
         public int CommentCount { get; set; }
         public DateTime PostedAt { get; set; }
 
+
         public List<Comment> Comments { get; set; } = new List<Comment>();
         public string GetTimeAgo()
         {

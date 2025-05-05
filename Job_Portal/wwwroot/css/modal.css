@@ -39,11 +39,12 @@
     border-bottom: 1px solid #eee;
 }
 
+
     .modal-header h3 {
         margin: 0;
         font-size: 1.25rem;
         font-weight: 600;
-        color: #333;
+        color: var(--text-dark);
     }
 
 .close-button {
@@ -62,9 +63,35 @@
 }
 
     .close-button:hover {
-        color: #333;
+        color: var(--text-dark);
         background-color: #f0f0f0;
+        transform: rotate(90deg);
     }
+
+.edit-form-container {
+    padding: 16px 20px;
+    display: flex;
+}
+
+.edit-form-avatar i {
+    font-size: 36px;
+}
+
+#editPostForm {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.edit-form-avatar {
+    width: 40px;
+    height: 40px;
+    margin-right: 12px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    color: var(--text-light);
+}
 
 .modal-post-preview {
     padding: 16px 20px;
@@ -240,13 +267,216 @@
 }
 
     .comment-submit:hover {
-        background-color: #303f9f;
+        background-color: var(--primary-hover);
+        transform: translateY(-2px);
     }
+
 
 .empty-comments {
     text-align: center;
     padding: 24px 0;
     color: #777;
     font-style: italic;
+}
+
+
+#editPostContent {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 0.9375rem;
+    min-height: 80px;
+    max-height: 200px;
+    margin-bottom: 12px;
+    transition: border-color 0.2s ease;
+}
+
+    #editPostContent:focus {
+        outline: none;
+        border-color: var(--primary-color);
+    }
+
+.btn-edit-submit {
+    align-self: flex-end;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(20, 168, 0, 0.3);
+}
+
+    .btn-edit-submit:hover {
+        background-color: var(--primary-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(20, 168, 0, 0.4);
+    }
+
+    .btn-edit-submit i {
+        font-size: 20px;
+    }
+
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+.action-button {
+    background: transparent;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+    .action-button i {
+        margin-right: 4px;
+        font-size: 18px;
+        transition: transform 0.3s ease;
+    }
+
+    .action-button:hover {
+        background-color: var(--primary-light);
+        color: var(--primary-color);
+    }
+
+        .action-button:hover i {
+            transform: translateY(-3px);
+            color: var(--primary-color);
+        }
+
+.like-button:hover i,
+.delete-button:hover i,
+.edit-button:hover i,
+.comment-button:hover i {
+    transform: translateY(-3px);
+    transition: transform 0.3s ease;
+}
+
+.like-button:hover .heart-icon {
+    color: #ff5252;
+}
+
+.delete-button:hover i {
+    color: #f44336;
+}
+
+.edit-button:hover i {
+    color: var(--primary-color);
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes modalFadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
+.modal.opening {
+    animation: modalFadeIn 0.3s ease-out forwards;
+}
+
+.modal.closing {
+    animation: modalFadeOut 0.3s ease-in forwards;
+}
+    
+#editPostModal.active {
+    display: flex;
+}
+
+
+@keyframes heartBeat {
+    0% {
+        transform: scale(1);
+    }
+
+    25% {
+        transform: scale(1.3);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    75% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+
+.like-button .material-icons {
+    transition: color 0.2s ease, transform 0.2s ease;
+    display: inline-block;
+}
+
+   
+    .like-button .material-icons.animate {
+        color: #ff5252;
+        animation: heartBeat 0.6s ease-in-out;
+    }
+
+.like-button.liked .material-icons {
+    color: #ff5252;
+}
+
+@keyframes countPop {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.like-button .count.animate {
+    animation: countPop 0.4s ease-in-out;
 }
 

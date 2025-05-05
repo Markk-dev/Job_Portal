@@ -24,7 +24,7 @@ namespace Job_Portal.Pages
         public string NewPostContent { get; set; }
 
         [BindProperty]
-        public string NewCommentContent { get; set; } // For adding new comment
+        public string NewCommentContent { get; set; }
 
         public List<Post> Posts { get; set; } = new List<Post>();
 
@@ -38,10 +38,10 @@ namespace Job_Portal.Pages
 
         public async Task OnGetAsync()
         {
-            // Fetch posts from the database
+            // Fetch posts from  DB
             Posts = _context.Posts.OrderByDescending(p => p.PostedAt).ToList();
 
-            // Get comments for each post
+            // Get comments
             foreach (var post in Posts)
             {
                 post.Comments = await _commentService.GetCommentsByPostId(post.Id);
@@ -73,14 +73,40 @@ namespace Job_Portal.Pages
 
         public IActionResult OnPostLikePost(int postId)
         {
+            string username = HttpContext.Session.GetString("username");
+            if (string.IsNullOrWhiteSpace(username))
+                return RedirectToPage("/Auth/Login");
+
             var post = _context.Posts.Find(postId);
-            if (post != null)
+            if (post == null)
+                return RedirectToPage();
+
+            var existingLike = _context.PostLikes
+                .FirstOrDefault(l => l.PostId == postId && l.Username == username);
+
+            if (existingLike != null)
             {
-                post.LikeCount++;
-                _context.SaveChanges();
+               
+                _context.PostLikes.Remove(existingLike);
+                post.LikeCount = Math.Max(0, post.LikeCount - 1);
             }
+            else
+            {
+                
+                var like = new PostLike
+                {
+                    PostId = postId,
+                    Username = username,
+                    LikedAt = DateTime.Now
+                };
+                _context.PostLikes.Add(like);
+                post.LikeCount++;
+            }
+
+            _context.SaveChanges();
             return RedirectToPage();
         }
+
 
         public IActionResult OnPostDeletePost(int postId)
         {
@@ -97,16 +123,25 @@ namespace Job_Portal.Pages
             return RedirectToPage();
         }
 
-        public IActionResult OnPostEditPost(int postId)
+        public IActionResult OnPostEditPost(int PostId, string EditedContent)
         {
-            var post = _context.Posts.Find(postId);
+            var post = _context.Posts.Find(PostId);
             if (post != null)
-            {
-                post.Content = "[Edited] " + post.Content;
+            {  
+                if (!post.Content.EndsWith(" [Edited]"))
+                {
+                    post.Content = EditedContent + " [Edited]";
+                }
+                else
+                {
+                  
+                    post.Content = EditedContent + " [Edited]";
+                }
                 _context.SaveChanges();
             }
             return RedirectToPage();
         }
+
 
         public async Task<IActionResult> OnPostCommentAsync(int postId)
         {

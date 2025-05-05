@@ -16,6 +16,8 @@ body {
 :root {
     /* Main Colors */
     --primary-color: #14A800;
+    --primary-light: #e4f7e1;
+    --primary-hover: #0e8600;
     --accent: #FCBF49;
     --text-color: #000000;
     /* Utilities */
@@ -23,4 +25,76 @@ body {
     --bg-header: #FAFAFA;
     --icon-color: #000000;
     --border: #B5B5B5;
+    --text-dark: #333;
+    --text-light: #777;
+    --bg-light: #f9f9f9;
+    --border-color: #eee;
 }
+
+
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+
+}
+
+::-webkit-scrollbar-thumb {
+    background: #14A800;
+    border: 2px solid #f1f1f1;
+    transition: background 0.2s ease;
+}
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #c5e8be; 
+    }
+
+
+
+.comment-modal {
+    max-height: 90vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #14A800 #f1f1f1;
+}
+
+    .comment-modal::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    .comment-modal::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    .comment-modal::-webkit-scrollbar-thumb {
+        background: #14A800;
+        border: 2px solid #f1f1f1;
+    }
+
+        .comment-modal::-webkit-scrollbar-thumb:hover {
+            background: #c5e8be;
+        }
+
+textarea::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+textarea::-webkit-scrollbar-track {
+    background: #f9f9f9;
+
+}
+
+textarea::-webkit-scrollbar-thumb {
+    background: #14A800;
+    border: 1px solid #f9f9f9;
+}
+
+    textarea::-webkit-scrollbar-thumb:hover {
+        background: #c5e8be;
+    }

@@ -14,8 +14,6 @@ public class CommentService
     {
         _context = context;
     }
-
-    // Make sure this method returns Task<List<Comment>> for async operations
     public async Task<List<Comment>> GetCommentsByPostId(int postId)
     {
         return await _context.Comments
