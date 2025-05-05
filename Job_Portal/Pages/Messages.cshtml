@@ -14,11 +14,16 @@
         <div class="conversations-list">
             <div class="conversations-header">
                 <h2 class="section-title">All messages</h2>
+
+                <!-- New Conversation Button -->
+                <button class="new-convo-button" onclick="document.getElementById('newConvoModal').style.display='block'">+ New</button>
+
                 <div class="search-box">
                     <span class="search-icon">🔍</span>
                     <input type="text" placeholder="Search through your messages" />
                 </div>
             </div>
+
             <div class="conversations">
                 @foreach (var conversation in Model.Conversations)
                 {
@@ -65,6 +70,7 @@
                             }
                             <div class="message-content">
                                 <div class="message-text">@message.Content</div>
+                                <!-- Removed the timestamp line -->
                             </div>
                         </div>
                     }
@@ -76,6 +82,77 @@
                     </form>
                 </div>
             }
+            else
+            {
+                <div class="no-thread-selected">
+                    <p>Select a conversation to start messaging.</p>
+                </div>
+            }
         </div>
     </div>
 </div>
+
+<!-- Modal for creating new conversation -->
+<div id="newConvoModal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <span class="close" onclick="document.getElementById('newConvoModal').style.display='none'">&times;</span>
+        <h3>Start New Conversation</h3>
+        <form method="post" asp-page-handler="StartConversation">
+            <input type="text" name="ReceiverUsername" placeholder="Enter recipient's username" required />
+            <button type="submit">Start</button>
+        </form>
+    </div>
+</div>
+
+<style>
+    .new-convo-button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        margin-left: auto;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+    .modal {
+        position: fixed;
+        z-index: 10;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.4);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modal-content {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        width: 300px;
+    }
+
+        .modal-content input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+        }
+
+        .modal-content button {
+            background-color: #28a745;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+        }
+
+    .close {
+        float: right;
+        font-size: 24px;
+        cursor: pointer;
+    }
+</style>
