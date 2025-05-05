@@ -1,80 +1,128 @@
+using Job_Portal.Data;
+using Job_Portal.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Collections.Generic;
-using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
-namespace Job_Portal.Pages
+namespace Job_Portal.Pages;
+
+public class MessagesModel : PageModel
 {
-    public class MessagesModel : PageModel
+    private readonly ApplicationDbContext _db;
+
+    public MessagesModel(ApplicationDbContext db) => _db = db;
+
+    public List<ConversationViewModel> Conversations { get; set; } = new();
+    public ConversationViewModel? SelectedConversation { get; set; }
+
+    [BindProperty]
+    public string NewMessageContent { get; set; } = string.Empty;
+
+    [BindProperty]
+    public string ReceiverUsername { get; set; } = string.Empty;
+
+    public IActionResult OnGet(int? conversationId)
     {
-        public List<Conversation> Conversations { get; set; } = new List<Conversation>();
-        public Conversation? SelectedConversation { get; set; }
+        var currentUser = HttpContext.Session.GetString("username");
+        if (string.IsNullOrEmpty(currentUser))
+            return RedirectToPage("/Auth/Login");
 
-        [BindProperty]
-        public string NewMessageContent { get; set; } = string.Empty;
+        var conversations = _db.Conversations
+            .Include(c => c.Messages)
+            .Where(c => c.User1 == currentUser || c.User2 == currentUser)
+            .ToList();
 
-        public void OnGet(int? conversationId)
+        Conversations = conversations.Select(c => new ConversationViewModel
         {
-            LoadConversations();
-
-            if (conversationId.HasValue)
+            Id = c.Id,
+            RecipientName = c.User1 == currentUser ? c.User2 : c.User1,
+            LastMessage = c.Messages.OrderByDescending(m => m.SentAt).FirstOrDefault()?.Content ?? "No messages yet",
+            Messages = c.Messages.Select(m => new MessageViewModel
             {
-                SelectedConversation = Conversations.FirstOrDefault(c => c.Id == conversationId.Value);
-            }
-        }
+                Content = m.Content,
+                SenderName = m.SenderName,
+                IsFromCurrentUser = m.SenderName == currentUser
+            }).ToList(),
+            IsSelected = (conversationId.HasValue && c.Id == conversationId.Value)
+        }).ToList();
 
-        public IActionResult OnPostSendMessage(int conversationId)
-        {
-            LoadConversations();
-
-            var conversation = Conversations.FirstOrDefault(c => c.Id == conversationId);
-            if (conversation != null && !string.IsNullOrWhiteSpace(NewMessageContent))
-            {
-                conversation.Messages.Add(new Message
-                {
-                    Content = NewMessageContent,
-                    IsFromCurrentUser = true,
-                    SenderName = "You" 
-                });
-            }
-
-            return RedirectToPage("Messages", new { conversationId });
-        }
-
-        private void LoadConversations()
-        {
-            Conversations = new List<Conversation>
-            //For now we'll be using this as placeholder data
-            {
-                new Conversation { Id = 1, RecipientName = "Mark Louie Alvarez", RecipientTitle = "Team Developer", LastMessage = "Hey, I just pushed my PR for....", Messages = new List<Message>
-                    {
-                        new Message { Content = "Hey, I just pushed my PR for review. When you get a chance, can you take a look?", IsFromCurrentUser = false, SenderName = "Mark Louie Alvarez" },
-                        new Message { Content = "Yep, I see it. I’ll go through it shortly and leave some comments if needed.", IsFromCurrentUser = true, SenderName = "You" }
-                    }
-                },
-                new Conversation { Id = 2, RecipientName = "Carl Kenzo Benavente", RecipientTitle = "Front-end Developer", LastMessage = "Hey, I ran into a weird....", Messages = new List<Message>
-                    {
-                        new Message { Content = "Hey, I ran into a weird bug in the payment flow. The total amount sometimes doubles on checkout. Could you check this thing out, Thanks!", IsFromCurrentUser = false, SenderName = "Carl Kenzo Benavente" }
-                    }
-                }
-            };
-        }
+        SelectedConversation = Conversations.FirstOrDefault(c => c.IsSelected);
+        return Page();
     }
 
-    public class Conversation
+    public IActionResult OnPostSendMessage(int conversationId)
+    {
+        var currentUser = HttpContext.Session.GetString("username");
+        if (string.IsNullOrEmpty(currentUser))
+            return RedirectToPage("/Auth/Login");
+
+        if (string.IsNullOrWhiteSpace(NewMessageContent))
+            return RedirectToPage("/Messages", new { conversationId });
+
+        var conversation = _db.Conversations
+            .Include(c => c.Messages)
+            .FirstOrDefault(c => c.Id == conversationId);
+
+        if (conversation != null)
+        {
+            var message = new Message
+            {
+                ConversationId = conversationId,
+                Content = NewMessageContent,
+                SenderName = currentUser,
+                IsFromCurrentUser = true,
+                SentAt = DateTime.Now
+            };
+
+            _db.Messages.Add(message);
+            _db.SaveChanges();
+        }
+
+        return RedirectToPage("/Messages", new { conversationId });
+    }
+
+    public IActionResult OnPostStartConversation()
+    {
+        var currentUser = HttpContext.Session.GetString("username");
+        if (string.IsNullOrEmpty(currentUser) || string.IsNullOrWhiteSpace(ReceiverUsername))
+            return RedirectToPage("/Messages");
+
+        if (ReceiverUsername == currentUser)
+            return RedirectToPage("/Messages");
+
+        var existing = _db.Conversations.FirstOrDefault(c =>
+            (c.User1 == currentUser && c.User2 == ReceiverUsername) ||
+            (c.User1 == ReceiverUsername && c.User2 == currentUser));
+
+        if (existing != null)
+            return RedirectToPage("/Messages", new { conversationId = existing.Id });
+
+        var newConversation = new Conversation
+        {
+            User1 = currentUser,
+            User2 = ReceiverUsername
+        };
+
+        _db.Conversations.Add(newConversation);
+        _db.SaveChanges();
+
+        return RedirectToPage("/Messages", new { conversationId = newConversation.Id });
+    }
+
+    public class ConversationViewModel
     {
         public int Id { get; set; }
         public string RecipientName { get; set; } = string.Empty;
-        public string RecipientTitle { get; set; } = string.Empty;
         public string LastMessage { get; set; } = string.Empty;
-        public List<Message> Messages { get; set; } = new List<Message>();
-        public bool IsSelected { get; set; } = false;
+        public List<MessageViewModel> Messages { get; set; } = new();
+        public bool IsSelected { get; set; }
+        public string RecipientTitle => "User"; // Replace with real title from user profile if available
     }
 
-    public class Message
+    public class MessageViewModel
     {
         public string Content { get; set; } = string.Empty;
-        public bool IsFromCurrentUser { get; set; }
         public string SenderName { get; set; } = string.Empty;
+        public bool IsFromCurrentUser { get; set; }
     }
 }
