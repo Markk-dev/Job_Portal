@@ -94,6 +94,19 @@
                                     {
                                         <div class="comment-item">
                                             <strong class="comment-author">@comment.AuthorName</strong>: <span class="comment-content">@comment.Content</span>
+                                            @if (HttpContext.Session.GetString("username") == comment.AuthorName)
+                                            {
+                                                <button type="button" class="action-button edit-comment-btn" 
+                                                        data-comment-id="@comment.CommentId"
+                                                        data-comment-content="@comment.Content.Replace("\"", "&quot;")">
+                                                    <i class="material-icons">edit</i>
+                                                </button>
+                                                <form method="post" asp-page-handler="DeleteComment" asp-route-commentId="@comment.CommentId" class="delete-comment-form">
+                                                    <button type="submit" class="action-button delete-comment-btn">
+                                                        <i class="material-icons">delete_outline</i>
+                                                    </button>
+                                                </form>
+                                            }
                                         </div>
                                     }
                                     <form method="post" asp-page-handler="Comment" asp-route-postId="@post.Id" class="comment-form">

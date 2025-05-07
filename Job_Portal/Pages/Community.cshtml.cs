@@ -107,7 +107,6 @@ namespace Job_Portal.Pages
             return RedirectToPage();
         }
 
-
         public IActionResult OnPostDeletePost(int postId)
         {
             var post = _context.Posts.Find(postId);
@@ -142,7 +141,6 @@ namespace Job_Portal.Pages
             return RedirectToPage();
         }
 
-
         public async Task<IActionResult> OnPostCommentAsync(int postId)
         {
             string currentUsername = HttpContext.Session.GetString("username");
@@ -162,6 +160,36 @@ namespace Job_Portal.Pages
                 await _commentService.AddComment(newComment);
             }
 
+            return RedirectToPage();
+        }
+
+        public IActionResult OnPostEditComment(int commentId, string EditCommentContent)
+        {
+            string currentUsername = HttpContext.Session.GetString("username");
+            if (string.IsNullOrWhiteSpace(currentUsername))
+                return RedirectToPage("/Auth/Login");
+
+            var comment = _context.Comments.Find(commentId);
+            if (comment != null)
+            {
+                comment.Content = EditCommentContent;
+                _context.SaveChanges();
+            }
+            return RedirectToPage();
+        }
+
+        public IActionResult OnPostDeleteComment(int commentId)
+        {
+            string currentUsername = HttpContext.Session.GetString("username");
+            if (string.IsNullOrWhiteSpace(currentUsername))
+                return RedirectToPage("/Auth/Login");
+
+            var comment = _context.Comments.Find(commentId);
+            if (comment != null)
+            {
+                _context.Comments.Remove(comment);
+                _context.SaveChanges();
+            }
             return RedirectToPage();
         }
     }
