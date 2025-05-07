@@ -286,7 +286,18 @@
     width: 100%;
 }
 
-
-
+.edit-comment-form {
+    margin-top: 8px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 8px;
+}
+.edit-comment-form textarea {
+    width: 100%;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    padding: 6px;
+    margin-bottom: 4px;
+}
 
 

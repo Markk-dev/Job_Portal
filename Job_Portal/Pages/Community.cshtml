@@ -184,9 +184,18 @@
                 @foreach (var category in Model.Categories)
                 {
                     <div class="category-card">
-                        <h4 class="category-title">@category.Name</h4>
-                        <p class="category-description">@category.Description</p>
-                        <a href="#" class="category-link">Read More</a>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <picture>
+                                <source srcset="/images/@(category.Name.ToLower()).webp" type="image/webp">
+                                <source srcset="/images/@(category.Name.ToLower()).png" type="image/png">
+                                <img src="/images/@(category.Name.ToLower()).jpg" alt="@category.Name" style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;" />
+                            </picture>
+                            <h4 class="category-title" style="margin:0;">@category.Name</h4>
+                        </div>
+                        <div style="margin-left:44px;">
+                            <p class="category-description">@category.Description</p>
+                            <a href="#" class="category-link">Read More</a>
+                        </div>
                     </div>
                 }
             </div>

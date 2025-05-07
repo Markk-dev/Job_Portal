@@ -27,6 +27,26 @@ public class CommentService
         _context.Comments.Add(comment);
         await _context.SaveChangesAsync();
     }
+
+    public async Task UpdateComment(int commentId, string newContent)
+    {
+        var comment = await _context.Comments.FindAsync(commentId);
+        if (comment != null)
+        {
+            comment.Content = newContent;
+            await _context.SaveChangesAsync();
+        }
+    }
+
+    public async Task DeleteComment(int commentId)
+    {
+        var comment = await _context.Comments.FindAsync(commentId);
+        if (comment != null)
+        {
+            _context.Comments.Remove(comment);
+            await _context.SaveChangesAsync();
+        }
+    }
 }
 
 

@@ -86,6 +86,19 @@
 
     // APPLY MATERIAL ICONS TO BUTTONS 
     updateActionButtons();
+
+    document.querySelectorAll('.edit-comment-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const commentId = this.getAttribute('data-comment-id');
+            document.getElementById('edit-comment-form-' + commentId).style.display = 'block';
+        });
+    });
+    document.querySelectorAll('.cancel-edit-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const commentId = this.getAttribute('data-comment-id');
+            document.getElementById('edit-comment-form-' + commentId).style.display = 'none';
+        });
+    });
     });
 
     // MODAL HELPER FUNCTIONS
@@ -156,9 +169,13 @@
         commentItems.forEach(item => {
             const author = item.querySelector('.comment-author').textContent;
     const content = item.querySelector('.comment-content').textContent;
+    const commentId = item.querySelector('.edit-comment-btn')?.getAttribute('data-comment-id') || '';
+
+    // Check if this comment belongs to the current user
+    const isCurrentUser = (window.currentUsername && window.currentUsername === author);
 
     commentsContainer.innerHTML += `
-    <div class="modal-comment">
+    <div class="modal-comment" id="modal-comment-${commentId}">
         <div class="comment-avatar">
             <span class="avatar-initial">${author.charAt(0)}</span>
         </div>
@@ -166,11 +183,45 @@
             <div class="comment-header">
                 <span class="comment-author">${author}</span>
                 <time class="comment-time">Just now</time>
+                ${isCurrentUser ? `
+                    <button type="button" class="action-button edit-comment-btn" 
+                        data-comment-id="${commentId}" 
+                        data-comment-content="${content}"
+                        title="Edit Comment">
+                        <i class="material-icons">edit</i>
+                    </button>
+                ` : ''}
             </div>
             <p class="comment-text">${content}</p>
         </div>
-    </div>`;
+    </div>
+    <div class="edit-comment-form" id="edit-comment-form-${commentId}" style="display:none;">
+        <form method="post" action="?handler=EditComment&commentId=${commentId}">
+            <textarea name="EditCommentContent" required>${content}</textarea>
+            <button type="submit" class="action-button" title="Save">
+                <i class="material-icons">check</i>
+            </button>
+            <button type="button" class="action-button cancel-edit-btn" data-comment-id="${commentId}" title="Cancel">
+                <i class="material-icons">close</i>
+            </button>
+        </form>
+    </div>
+    `;
         });
+
+    // Re-attach event listeners for edit/cancel buttons
+    document.querySelectorAll('.edit-comment-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const commentId = this.getAttribute('data-comment-id');
+            document.getElementById('edit-comment-form-' + commentId).style.display = 'block';
+        });
+    });
+    document.querySelectorAll('.cancel-edit-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const commentId = this.getAttribute('data-comment-id');
+            document.getElementById('edit-comment-form-' + commentId).style.display = 'none';
+        });
+    });
     }
 
     //UPDATE ACTION BUTTONS
