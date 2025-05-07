@@ -78,3 +78,23 @@ hr {
         .nav-icons i:hover {
             color: var(--primary-color); 
         }
+
+        
+.nav-links li a.active {
+    color: var(--primary-color);
+    font-weight: bold;
+    position: relative;
+}
+
+.nav-links li a.active::after {
+    content: "";
+    display: block;
+    margin: 0 auto;
+    margin-top: 6px;
+    width: 60%;
+    height: 4px;
+    background: var(--primary-color);
+    border-radius: 2px;
+    transition: width 0.3s;
+}
+

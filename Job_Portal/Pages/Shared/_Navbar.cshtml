@@ -1,5 +1,4 @@
-﻿
-<head>
+﻿<head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="~/css/global.css"/>
     <link rel="stylesheet" href="~/css/navbar.css" />
@@ -10,10 +9,10 @@
     <nav class="navbar">
         <div class="logo">JP</div>
         <ul class="nav-links">
-            <li><a asp-page="/Community" class="active">Community</a></li>
-            <li><a asp-page="/Jobs">Jobs</a></li>
-            <li><a asp-page="/Companies">Companies</a></li>
-            <li><a asp-page="/Messages">Messages</a></li>
+            <li><a asp-page="/Community" class="@(ViewContext.RouteData.Values["Page"].ToString() == "/Community" ? "active" : "")">Community</a></li>
+            <li><a asp-page="/Jobs" class="@(ViewContext.RouteData.Values["Page"].ToString() == "/Jobs" ? "active" : "")">Jobs</a></li>
+            <li><a asp-page="/Companies" class="@(ViewContext.RouteData.Values["Page"].ToString() == "/Companies" ? "active" : "")">Companies</a></li>
+            <li><a asp-page="/Messages" class="@(ViewContext.RouteData.Values["Page"].ToString() == "/Messages" ? "active" : "")">Messages</a></li>
         </ul>
         <div class="nav-icons">
             <div class="border">
@@ -29,4 +28,3 @@
     </nav>
     <hr />
 </body>
-

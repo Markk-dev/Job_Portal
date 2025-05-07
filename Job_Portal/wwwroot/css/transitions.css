@@ -1,0 +1,41 @@
+html {
+    scrollbar-gutter: stable;
+}
+
+.page-transition {
+    opacity: 0;
+    transition: opacity 0.25s ease-in-out;
+}
+
+.page-transition.fade-out {
+    opacity: 0;
+}
+
+.page-transition.fade-in {
+    opacity: 1;
+}
+
+body.loading {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}
+
+.page-transition {
+    visibility: visible;
+    opacity: 0;
+    transition: opacity 0.25s ease-in-out, visibility 0.25s ease-in-out;
+}
+
+.page-transition.fade-in {
+    visibility: visible;
+    opacity: 1;
+}
+
+html.loading {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+} 

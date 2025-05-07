@@ -120,10 +120,14 @@
 
 /* Job details */
 .job-details {
-    background-color: #fff;
-    border-radius: 8px;
-    border: 1px solid #e0e0e0;
-    overflow: hidden;
+    position: sticky;
+    top: 30px;
+    align-self: flex-start;
+    z-index: 2;
+    max-height: 80vh;
+    overflow-y: auto;
+    background: #fff;
+    border-radius: 12px;
 }
 
 .job-header {
@@ -200,65 +204,129 @@
     color: inherit;
 }
 
-/* Modal styles */
+/* Modal improvements */
 .modal {
     display: none;
     position: fixed;
-    z-index: 100;
+    z-index: 1000;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-    overflow: auto;
+    overflow-y: auto;
 }
 
 .modal-content {
     background-color: #fff;
-    margin: 10% auto;
-    width: 80%;
-    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
     position: relative;
+    animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .close-button {
     position: absolute;
-    top: 10px;
-    right: 15px;
+    right: 20px;
+    top: 20px;
     font-size: 24px;
     font-weight: bold;
+    color: #666;
     cursor: pointer;
-    color: #aaa;
 }
 
-    .close-button:hover {
-        color: #333;
-    }
+.close-button:hover {
+    color: #333;
+}
 
 .modal-job-header {
-    padding: 20px;
-    border-bottom: 1px solid #e0e0e0;
+    margin-bottom: 20px;
 }
 
 .modal-job-description {
-    padding: 20px;
-    font-size: 14px;
-    line-height: 1.5;
-    color: #555;
+    margin: 20px 0;
+    line-height: 1.6;
+    color: #333;
 }
 
 .modal-job-salary {
-    padding: 20px;
-    background-color: #e8f5e9;
-    margin: 0 20px 20px 20px;
-    border-radius: 8px;
+    margin: 20px 0;
 }
 
 .modal-actions {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
-    padding: 0 20px 20px 20px;
+    margin-top: 20px;
+}
+
+#toast.toast-success {
+    position: fixed;
+    right: 2rem;
+    bottom: 2rem;
+    z-index: 9999;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    min-width: 340px;
+    max-width: 400px;
+    background: #e6faea;
+    color: #256029;
+    border: 1.5px solid #4CAF50;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    padding: 1.25rem 1.5rem;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(30px);
+    transition: opacity 0.3s, transform 0.3s;
+    font-family: inherit;
+}
+#toast.show {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+.toast-icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    margin-top: 2px;
+}
+.toast-title {
+    font-weight: 700;
+    font-size: 1.15rem;
+    margin-bottom: 0.15rem;
+}
+.toast-message {
+    font-size: 1rem;
+    color: #256029;
+}
+.toast-close {
+    background: none;
+    border: none;
+    color: #256029;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-left: 1rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 0.25rem;
+    transition: color 0.2s;
+}
+.toast-close:hover {
+    color: #388e3c;
 }

@@ -1,5 +1,8 @@
 ﻿@page
 @model Job_Portal.Pages.Auth.RegisterModel
+@{
+    Layout = "../Shared/_AuthLayout";
+}
 
 @{
     ViewData["Title"] = "Register";
@@ -17,25 +20,7 @@
         By continuing, you agree to our Terms of Use and Privacy Policy
     </p>
 
-    <div class="social-buttons">
-        <div class="social-button google-button" style="cursor: default;">
-            <span class="social-icon">G</span>
-            <span class="social-text">Continue with Google</span>
-        </div>
-
-        <div class="social-button facebook-button" style="cursor: default;">
-            <span class="social-icon">f</span>
-            <span class="social-text">Continue with Facebook</span>
-        </div>
-
-        <div class="social-button apple-button" style="cursor: default;">
-            <span class="social-icon">⌘</span>
-            <span class="social-text">Continue with Apple</span>
-        </div>
-    </div>
-
     <div class="divider">
-        <span class="divider-text">or</span>
     </div>
 
     <form method="post" class="register-form">
@@ -95,40 +80,6 @@
         color: #666;
         text-align: center;
         margin-bottom: 20px;
-    }
-
-    .social-buttons {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        margin-bottom: 20px;
-    }
-
-    .social-button {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        padding: 10px 15px;
-        border-radius: 4px;
-        border: 1px solid #ddd;
-        background-color: white;
-        cursor: pointer;
-        transition: background-color 0.2s;
-    }
-
-    .social-button:hover {
-        background-color: #f5f5f5;
-    }
-
-    .social-icon {
-        margin-right: 10px;
-        font-weight: bold;
-    }
-
-    .social-text {
-        flex: 1;
-        text-align: center;
     }
 
     .divider {
